@@ -106,8 +106,6 @@ def split_and_export(directory, downsample_corpus=False):
     for file in Path(directory).glob("*.json"):
         corpus = pd.read_json(file)
         if downsample_corpus:
-            if file.stem == "romane":
-                continue
             corpus = downsample(corpus)
         X, y = split(corpus["text"], corpus["class"])
         for s in {"train", "test", "val"}:
