@@ -122,5 +122,6 @@ def convert_flair_data(filepath):
     with filepath.open("r", encoding="utf-8") as file:
         data = json.load(file)
     with open(f"{filepath.stem}-flair.txt", "w", encoding="utf-8") as file:
-        data = [f"__label__{instance['class']} {instance['text']}" for instance in data]
+        nl = "\n"
+        data = [f"__label__{instance['class']} {instance['text'].replace(nl, ' ')}" for instance in data]
         file.write("\n".join(data))
