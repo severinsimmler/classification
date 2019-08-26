@@ -116,3 +116,11 @@ def split_and_export(directory, downsample_corpus=False):
             with open(filename, "w", encoding="utf-8") as f:
                 dump = [{"text": t, "class": l} for t, l in zip(X[s], y[s])]
                 f.write(json.dumps(dump, indent=2, ensure_ascii=False))
+
+                
+def convert_flair_data(filepath):
+    with filepath.open("r", encoding="utf-8") as file:
+        data = json.load(file)
+    with open(f"{filepath.stem}-flair.txt", "w", encoding="utf-8") as file:
+        data = [f"__label__{instance['class']} {instance['text']}" for instance in data]
+        file.write("\n".join(data))

@@ -7,7 +7,8 @@ verify_ssl = true
 jupyterlab = "*"
 
 [packages]
-spacy = "*"
+spacy-pytorch-transformers = "*"
 
 [requires]
 python_version = "3.7.3"
+
