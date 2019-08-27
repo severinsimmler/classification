@@ -1,3 +1,10 @@
+"""
+classification.preprocessing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This module provides general preprocessing.
+"""
+
 from pathlib import Path
 import random
 import json
@@ -26,34 +33,19 @@ def load(
         else:
             filepath = Path(CURRENT_DIR, "data", "full", "dramen.json")
     elif corpus in {"romane", "roman", "novels", "novel"}:
-        if downsample:
-            filepath = Path(
-                CURRENT_DIR, "data", "split-downsampled", "romane-downsampled-{}.json"
-            )
-        else:
+        if split:
             filepath = Path(CURRENT_DIR, "data", "split", "romane-{}json")
-        if not split:
+        else:
             filepath = Path(CURRENT_DIR, "data", "full", "romane.json")
     elif corpus in {"wikipedia"}:
-        if downsample:
-            filepath = Path(
-                CURRENT_DIR,
-                "data",
-                "split-downsampled",
-                "wikipedia-downsampled-{}.json",
-            )
-        else:
+        if split:
             filepath = Path(CURRENT_DIR, "data", "split", "wikipedia-{}.json")
-        if not split:
+        else:
             filepath = Path(CURRENT_DIR, "data", "full", "wikipedia.json")
     elif corpus in {"zeitung", "zeitungsartikel", "newspaper"}:
-        if downsample:
-            filepath = Path(
-                CURRENT_DIR, "data", "split-downsampled", "zeitung-downsampled-{}.json"
-            )
-        else:
+        if split:
             filepath = Path(CURRENT_DIR, "data", "split", "zeitung-{}.json")
-        if not split:
+        else:
             filepath = Path(CURRENT_DIR, "data", "full", "zeitung.json")
     else:
         raise ValueError(f"Corpus '{corpus}' does not exist.")
@@ -66,22 +58,6 @@ def load(
     else:
         return pd.read_json(filepath)
 
-
-def downsample(
-    dataset: pd.DataFrame, ratio: Tuple[int] = (73, 57, 43), random_state: int = 23
-):
-    a, b, c = tuple(set(dataset["class"]))
-    a = dataset[dataset["class"] == a]
-    b = dataset[dataset["class"] == b]
-    c = dataset[dataset["class"] == c]
-    random.seed(random_state)
-    a_ = random.sample(list(a.index), ratio[0])
-    b_ = random.sample(list(b.index), ratio[1])
-    c_ = random.sample(list(c.index), ratio[2])
-    a = a.iloc[[True if _ in a_ else False for _ in a.index]]
-    b = b.iloc[[True if _ in b_ else False for _ in b.index]]
-    c = c.iloc[[True if _ in c_ else False for _ in c.index]]
-    return a.append(b).append(c)
 
 def split(
     X: pd.Series,
@@ -102,26 +78,24 @@ def split(
     )
 
 
-def split_and_export(directory, downsample_corpus=False):
+def split_and_export(directory):
     for file in Path(directory).glob("*.json"):
         corpus = pd.read_json(file)
-        if downsample_corpus:
-            corpus = downsample(corpus)
         X, y = split(corpus["text"], corpus["class"])
         for s in {"train", "test", "val"}:
-            if downsample_corpus:
-                filename = f"{file.stem}-downsampled-{s}.json"
-            else:
-                filename = f"{file.stem}-{s}.json"
-            with open(filename, "w", encoding="utf-8") as f:
+            with open(f"{file.stem}-{s}.json", "w", encoding="utf-8") as f:
                 dump = [{"text": t, "class": l} for t, l in zip(X[s], y[s])]
                 f.write(json.dumps(dump, indent=2, ensure_ascii=False))
 
-                
-def convert_flair_data(filepath):
-    with filepath.open("r", encoding="utf-8") as file:
-        data = json.load(file)
-    with open(f"{filepath.stem}-flair.txt", "w", encoding="utf-8") as file:
-        nl = "\n"
-        data = [f"__label__{instance['class']} {instance['text'].replace(nl, ' ')}" for instance in data]
-        file.write("\n".join(data))
+
+def convert_flair_data(directory):
+    for file in Path(directory).glob("*.json"):
+        with file.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+        with Path(f"{file.stem}-flair.txt").open("w", encoding="utf-8") as f:
+            nl = "\n"
+            data = [
+                f"__label__{instance['class']} {instance['text'].replace(nl, ' ')}"
+                for instance in data
+            ]
+            f.write("\n".join(data))
