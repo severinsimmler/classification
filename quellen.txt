@@ -1,4 +1,4 @@
 dramen: textgrid
 zeitungsartikel: https://ofai.github.io/million-post-corpus/#citation
-romane: hettinger et al
+romane: schlör et al
 wikipedia: seminar
