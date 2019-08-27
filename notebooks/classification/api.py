@@ -65,8 +65,10 @@ def classic_optimization(
         yield (name, classifier, best_params)
 
 
-def classic_pipeline(corpus: str, random_state: int = 23):
+def classic_pipeline(corpus: str, downsample: bool = True, random_state: int = 23):
     dataset = preprocessing.load(corpus, split=False)
+    if downsample:
+        dataset = preprocessing.downsample(dataset)
     vectorizer = TfidfVectorizer(tokenizer=preprocessing.tokenize, max_features=10000)
     X, y = vectorizer.fit_transform(dataset["text"]), list(dataset["class"])
     X, y = preprocessing.split(X, y, random_state=23)

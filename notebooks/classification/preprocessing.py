@@ -28,25 +28,125 @@ def load(
     corpus: str, split: bool = False, downsample: bool = True
 ) -> Dict[str, pd.DataFrame]:
     if corpus in {"dramen", "drama", "dramas"}:
-        if split:
-            filepath = Path(CURRENT_DIR, "data", "sentences", "split", "dramen-sentences-{}.json")
+        if downsample:
+            if split:
+                filepath = Path(
+                    CURRENT_DIR,
+                    "data",
+                    "downsampled",
+                    "split",
+                    "dramen-downsampled-{}.json",
+                )
+            else:
+                filepath = Path(
+                    CURRENT_DIR,
+                    "data",
+                    "downsampled",
+                    "sentences",
+                    "dramen-downsampled.json",
+                )
         else:
-            filepath = Path(CURRENT_DIR, "data", "sentences","full", "dramen-sentences.json")
+            if split:
+                filepath = Path(
+                    CURRENT_DIR,
+                    "data",
+                    "sentences",
+                    "split",
+                    "dramen-sentences-{}.json",
+                )
+            else:
+                filepath = Path(
+                    CURRENT_DIR, "data", "sentences", "full", "dramen-sentences.json"
+                )
     elif corpus in {"romane", "roman", "novels", "novel"}:
-        if split:
-            filepath = Path(CURRENT_DIR, "data", "sentences","split", "romane-sentences-{}json")
+        if downsample:
+            if split:
+                filepath = Path(
+                    CURRENT_DIR,
+                    "data",
+                    "downsampled",
+                    "split",
+                    "romane-downsampled-{}.json",
+                )
+            else:
+                filepath = Path(
+                    CURRENT_DIR,
+                    "data",
+                    "downsampled",
+                    "sentences",
+                    "romane-downsampled.json",
+                )
         else:
-            filepath = Path(CURRENT_DIR, "data", "sentences", "full", "romane-sentences.json")
+            if split:
+                filepath = Path(
+                    CURRENT_DIR, "data", "sentences", "split", "romane-sentences-{}json"
+                )
+            else:
+                filepath = Path(
+                    CURRENT_DIR, "data", "sentences", "full", "romane-sentences.json"
+                )
     elif corpus in {"wikipedia"}:
-        if split:
-            filepath = Path(CURRENT_DIR, "data", "sentences", "split", "wikipedia-sentences-{}.json")
+        if downsample:
+            if split:
+                filepath = Path(
+                    CURRENT_DIR,
+                    "data",
+                    "downsampled",
+                    "split",
+                    "wikipedia-downsampled-{}.json",
+                )
+            else:
+                filepath = Path(
+                    CURRENT_DIR,
+                    "data",
+                    "downsampled",
+                    "sentences",
+                    "wikipedia-downsampled.json",
+                )
         else:
-            filepath = Path(CURRENT_DIR, "data", "sentences", "full", "wikipedia-sentences.json")
+            if split:
+                filepath = Path(
+                    CURRENT_DIR,
+                    "data",
+                    "sentences",
+                    "split",
+                    "wikipedia-sentences-{}.json",
+                )
+            else:
+                filepath = Path(
+                    CURRENT_DIR, "data", "sentences", "full", "wikipedia-sentences.json"
+                )
     elif corpus in {"zeitung", "zeitungsartikel", "newspaper"}:
-        if split:
-            filepath = Path(CURRENT_DIR, "data", "sentences", "split", "zeitung-sentences-{}.json")
+        if downsample:
+            if split:
+                filepath = Path(
+                    CURRENT_DIR,
+                    "data",
+                    "downsampled",
+                    "split",
+                    "zeitung-downsampled-{}.json",
+                )
+            else:
+                filepath = Path(
+                    CURRENT_DIR,
+                    "data",
+                    "downsampled",
+                    "sentences",
+                    "zeitung-downsampled.json",
+                )
         else:
-            filepath = Path(CURRENT_DIR, "data", "sentences", "full", "zeitung-sentences.json")
+            if split:
+                filepath = Path(
+                    CURRENT_DIR,
+                    "data",
+                    "sentences",
+                    "split",
+                    "zeitung-sentences-{}.json",
+                )
+            else:
+                filepath = Path(
+                    CURRENT_DIR, "data", "sentences", "full", "zeitung-sentences.json"
+                )
     else:
         raise ValueError(f"Corpus '{corpus}' does not exist.")
     if split:
@@ -78,9 +178,11 @@ def split(
     )
 
 
-def split_and_export(directory):
+def split_and_export(directory, downsample_corpus=True):
     for file in Path(directory).glob("*.json"):
         corpus = pd.read_json(file)
+        if downsample_corpus:
+            corpus = downsample(corpus)
         X, y = split(corpus["text"], corpus["class"])
         for s in {"train", "test", "val"}:
             with open(f"{file.stem}-{s}.json", "w", encoding="utf-8") as f:
@@ -99,3 +201,18 @@ def convert_flair_data(directory):
                 for instance in data
             ]
             f.write("\n".join(data))
+
+
+def downsample(dataset, ratio={0: 296, 1: 304, 2: 181}):
+    a = dataset[dataset["class"] == 0].reset_index()
+    b = dataset[dataset["class"] == 1].reset_index()
+    c = dataset[dataset["class"] == 2].reset_index()
+
+    a_ = random.sample(range(a.shape[0]), ratio[0])
+    b_ = random.sample(range(b.shape[0]), ratio[1])
+    c_ = random.sample(range(c.shape[0]), ratio[2])
+
+    a = a.iloc[a.index.isin(a_)]
+    b = b.iloc[b.index.isin(b_)]
+    c = c.iloc[c.index.isin(c_)]
+    return a.append(b).append(c)
