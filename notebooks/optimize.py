@@ -18,14 +18,14 @@ from flair.hyperparameter.param_selection import (
 
 
 if __name__ == "__main__":
-    data_folder = Path("classification", "data", "flair", "split")
+    data_folder = Path("classification", "data", "downsampled", "flair")
 
     for model, embedding in [
         ("bert", BertEmbeddings("bert-base-german-cased")),
         ("xlm", XLMEmbeddings("xlm-mlm-ende-1024")),
         ("xlnet", XLNetEmbeddings()),
     ]:
-        for c in ["romane", "zeitung", "wikipedia", "dramen"]:
+        for c in ["dramen", "romane", "zeitung", "wikipedia"]:
             test_file = f"{c}-sentences-test-flair.txt"
             dev_file = f"{c}-sentences-val-flair.txt"
             train_file = f"{c}-sentences-train-flair.txt"
