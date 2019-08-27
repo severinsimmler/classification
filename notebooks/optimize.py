@@ -53,7 +53,7 @@ if __name__ == "__main__":
                     Parameter.LEARNING_RATE, hp.choice, options=[0.05, 0.1, 0.15, 0.2]
                 )
                 search_space.add(
-                    Parameter.MINI_BATCH_SIZE, hp.choice, options=[8, 16, 32]
+                    Parameter.MINI_BATCH_SIZE, hp.choice, options=[8]
                 )
 
                 param_selector = TextClassifierParamSelector(
