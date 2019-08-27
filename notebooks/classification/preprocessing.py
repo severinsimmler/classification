@@ -29,24 +29,24 @@ def load(
 ) -> Dict[str, pd.DataFrame]:
     if corpus in {"dramen", "drama", "dramas"}:
         if split:
-            filepath = Path(CURRENT_DIR, "data", "split", "dramen-{}.json")
+            filepath = Path(CURRENT_DIR, "data", "sentences", "split", "dramen-sentences-{}.json")
         else:
-            filepath = Path(CURRENT_DIR, "data", "full", "dramen.json")
+            filepath = Path(CURRENT_DIR, "data", "sentences","full", "dramen-sentences.json")
     elif corpus in {"romane", "roman", "novels", "novel"}:
         if split:
-            filepath = Path(CURRENT_DIR, "data", "split", "romane-{}json")
+            filepath = Path(CURRENT_DIR, "data", "sentences","split", "romane-sentences-{}json")
         else:
-            filepath = Path(CURRENT_DIR, "data", "full", "romane.json")
+            filepath = Path(CURRENT_DIR, "data", "sentences", "full", "romane-sentences.json")
     elif corpus in {"wikipedia"}:
         if split:
-            filepath = Path(CURRENT_DIR, "data", "split", "wikipedia-{}.json")
+            filepath = Path(CURRENT_DIR, "data", "sentences", "split", "wikipedia-sentences-{}.json")
         else:
-            filepath = Path(CURRENT_DIR, "data", "full", "wikipedia.json")
+            filepath = Path(CURRENT_DIR, "data", "sentences", "full", "wikipedia-sentences.json")
     elif corpus in {"zeitung", "zeitungsartikel", "newspaper"}:
         if split:
-            filepath = Path(CURRENT_DIR, "data", "split", "zeitung-{}.json")
+            filepath = Path(CURRENT_DIR, "data", "sentences", "split", "zeitung-sentences-{}.json")
         else:
-            filepath = Path(CURRENT_DIR, "data", "full", "zeitung.json")
+            filepath = Path(CURRENT_DIR, "data", "sentences", "full", "zeitung-sentences.json")
     else:
         raise ValueError(f"Corpus '{corpus}' does not exist.")
     if split:

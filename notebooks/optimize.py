@@ -25,7 +25,7 @@ if __name__ == "__main__":
         ("xlm", XLMEmbeddings("xlm-mlm-ende-1024")),
         ("xlnet", XLNetEmbeddings()),
     ]:
-        for c in {"romane", "dramen", "zeitung"}:
+        for c in {"romane", "zeitung", "wikipedia"}:
             if model == "bert" and c in {"zeitung", "romane"}:
                 continue
             else:
