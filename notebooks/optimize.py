@@ -18,7 +18,7 @@ from flair.hyperparameter.param_selection import (
 
 
 if __name__ == "__main__":
-    data_folder = Path("classification", "notebooks", "classification", "data", "downsampled", "flair")
+    data_folder = Path("classification", "data", "downsampled", "flair")
 
     for model, embedding in [
         ("bert", BertEmbeddings("bert-base-german-cased")),
