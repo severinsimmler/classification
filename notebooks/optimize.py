@@ -26,9 +26,9 @@ if __name__ == "__main__":
         ("xlnet", XLNetEmbeddings()),
     ]:
         for c in ["dramen", "romane", "zeitung", "wikipedia"]:
-            test_file = f"{c}-sentences-test-flair.txt"
-            dev_file = f"{c}-sentences-val-flair.txt"
-            train_file = f"{c}-sentences-train-flair.txt"
+            test_file = f"{c}-downsampled-test-flair.txt"
+            dev_file = f"{c}-downsampled-val-flair.txt"
+            train_file = f"{c}-downsampled-train-flair.txt"
 
             corpus = ClassificationCorpus(
                 data_folder,
