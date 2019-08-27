@@ -21,11 +21,11 @@ if __name__ == "__main__":
     data_folder = Path("classification", "data", "flair", "split")
 
     for model, embedding in [
-        ("bert", BertEmbeddings("bert-base-german-cased")),
         ("xlm", XLMEmbeddings("xlm-mlm-ende-1024")),
+        ("bert", BertEmbeddings("bert-base-german-cased")),
         ("xlnet", XLNetEmbeddings()),
     ]:
-        for c in {"romane", "zeitung", "wikipedia"}:
+        for c in ["romane", "zeitung", "wikipedia", "dramen"]:
             if model == "bert" and c in {"zeitung", "romane"}:
                 continue
             else:
