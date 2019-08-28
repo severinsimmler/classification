@@ -26,6 +26,8 @@ if __name__ == "__main__":
         ("xlnet", XLNetEmbeddings()),
     ]:
         for c in ["dramen", "romane", "zeitung", "wikipedia"]:
+            if model == "bert" and c != "wikipedia":
+                continue
             test_file = f"{c}-downsampled-test-flair.txt"
             dev_file = f"{c}-downsampled-val-flair.txt"
             train_file = f"{c}-downsampled-train-flair.txt"
