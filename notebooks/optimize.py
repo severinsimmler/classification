@@ -23,7 +23,6 @@ if __name__ == "__main__":
     for model, embedding in [
         ("bert", BertEmbeddings("bert-base-german-cased")),
         ("xlm", XLMEmbeddings("xlm-mlm-ende-1024")),
-        ("xlnet", XLNetEmbeddings("xlnet-base-cased")),
     ]:
         for c in ["dramen", "romane", "zeitung", "wikipedia"]:
             test_file = f"{c}-downsampled-test-flair.txt"
@@ -54,9 +53,9 @@ if __name__ == "__main__":
                 False,
                 f"optimization/{model}/{c}",
                 "lstm",
-                max_epochs=5,
+                max_epochs=10,
                 training_runs=1,
                 optimization_value=OptimizationValue.DEV_SCORE,
             )
 
-            param_selector.optimize(search_space, max_evals=5)
+            param_selector.optimize(search_space, max_evals=10)
