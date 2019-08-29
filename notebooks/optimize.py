@@ -21,10 +21,12 @@ if __name__ == "__main__":
     data_folder = Path("classification", "data", "downsampled", "flair")
 
     for model, embedding in [
-        ("bert", BertEmbeddings("bert-base-german-cased")),
+        #("bert", BertEmbeddings("bert-base-german-cased")),
         ("xlm", XLMEmbeddings("xlm-mlm-ende-1024")),
     ]:
         for c in ["dramen", "romane", "zeitung", "wikipedia"]:
+            if c != "wikipedia":
+                continue
             test_file = f"{c}-downsampled-test-flair.txt"
             dev_file = f"{c}-downsampled-val-flair.txt"
             train_file = f"{c}-downsampled-train-flair.txt"
@@ -53,9 +55,9 @@ if __name__ == "__main__":
                 False,
                 f"optimization/{model}/{c}",
                 "lstm",
-                max_epochs=10,
+                max_epochs=5,
                 training_runs=1,
                 optimization_value=OptimizationValue.DEV_SCORE,
             )
 
-            param_selector.optimize(search_space, max_evals=10)
+            param_selector.optimize(search_space, max_evals=5)
