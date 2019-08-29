@@ -21,10 +21,10 @@ if __name__ == "__main__":
         for c in ["dramen", "romane", "zeitung", "wikipedia"]:
             if model == "bert":
                 if c == "dramen":
-                    dropout: 0.4949748569324362
-                    hidden_size: 64
-                    learning_rate: 0.05
-                    mini_batch_size: 32
+                    dropout = 0.4949748569324362
+                    hidden_size = 64
+                    learning_rate = 0.05
+                    mini_batch_size = 32
                     rnn_layers = 2
                     hidden_size = 64
                 elif c == "romane":
