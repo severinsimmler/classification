@@ -1,0 +1,62 @@
+evaluation run 1
+	dropout: 0.4053024530074014
+	embeddings: xlm-mlm-ende-1024
+	hidden_size: 32
+	learning_rate: 0.05
+	mini_batch_size: 32
+	rnn_layers: 2
+score: 0.5446
+variance: 0.0008394200000000001
+test_score: 0.4177
+----------------------------------------------------------------------------------------------------
+evaluation run 2
+	dropout: 0.31377691336743874
+	embeddings: xlm-mlm-ende-1024
+	hidden_size: 128
+	learning_rate: 0.15
+	mini_batch_size: 32
+	rnn_layers: 1
+score: 0.5868333333333333
+variance: 4.355555555555563e-05
+test_score: 0.4177
+----------------------------------------------------------------------------------------------------
+evaluation run 3
+	dropout: 0.2438597200401516
+	embeddings: xlm-mlm-ende-1024
+	hidden_size: 128
+	learning_rate: 0.05
+	mini_batch_size: 32
+	rnn_layers: 2
+score: 0.5352333333333333
+variance: 0.0025135622222222233
+test_score: 0.5443
+----------------------------------------------------------------------------------------------------
+evaluation run 4
+	dropout: 0.16868538231768704
+	embeddings: xlm-mlm-ende-1024
+	hidden_size: 128
+	learning_rate: 0.15
+	mini_batch_size: 32
+	rnn_layers: 2
+score: 0.5680666666666667
+variance: 0.0003076955555555558
+test_score: 0.481
+----------------------------------------------------------------------------------------------------
+evaluation run 5
+	dropout: 0.21099928346278096
+	embeddings: xlm-mlm-ende-1024
+	hidden_size: 128
+	learning_rate: 0.15
+	mini_batch_size: 32
+	rnn_layers: 2
+score: 0.5539666666666667
+variance: 0.003219815555555551
+test_score: 0.4304
+----------------------------------------------------------------------------------------------------
+best parameter combination
+	dropout: 0.2438597200401516
+	embeddings: 0
+	hidden_size: 2
+	learning_rate: 0
+	mini_batch_size: 0
+	rnn_layers: 1

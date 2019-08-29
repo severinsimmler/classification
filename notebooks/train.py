@@ -65,8 +65,8 @@ if __name__ == "__main__":
                     mini_batch_size = 32
                     rnn_layers = 1
                 elif c == "wikipedia":
-                    dropout = 0
-                    hidden_size = 64
+                    dropout = 0.2438597200401516
+                    hidden_size = 128
                     learning_rate = 0.05
                     mini_batch_size = 32
                     rnn_layers = 2
