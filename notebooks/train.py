@@ -15,8 +15,8 @@ if __name__ == "__main__":
     data_folder = Path("classification", "data", "downsampled", "flair")
 
     for model, embedding in [
-        ("bert", BertEmbeddings("bert-base-german-cased")),
-        ("xlm", XLMEmbeddings("xlm-mlm-ende-1024")),
+        ("bert", [BertEmbeddings("bert-base-german-cased")]),
+        ("xlm", [XLMEmbeddings("xlm-mlm-ende-1024")]),
     ]:
         for c in ["dramen", "romane", "zeitung", "wikipedia"]:
             if model == "bert":
