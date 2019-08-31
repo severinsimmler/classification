@@ -138,7 +138,7 @@ if __name__ == "__main__":
                     nlp.update(
                         texts, annotations, sgd=optimizer, drop=dropout, losses=losses
                     )
-
+            logging.error(losses)
             stats = list()
             for _, row in dataset["test"].iterrows():
                 t = nlp(row["text"])
@@ -153,3 +153,4 @@ if __name__ == "__main__":
             logging.error(sum(stats) / len(dataset["test"]))
             with open(f"{model}-{corpus}.txt", "w", encoding="utf-8") as f:
                 f.write(f"{sum(stats) / len(dataset['test'])}")
+
