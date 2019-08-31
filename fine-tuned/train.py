@@ -6,6 +6,7 @@ import random
 
 import numpy as np
 import spacy
+from spacy_pytorch_transformers import PyTT_Language, PyTT_WordPiecer, PyTT_TokenVectorEncoder
 import torch
 
 from classification import preprocessing
