@@ -18,7 +18,7 @@ spacy.util.fix_random_seed(23)
 
 MAX_EPOCHS = 100
 LEARN_RATE = 2e-5
-MAX_BATCH_SIZE = 64
+MAX_BATCH_SIZE = 32
 LABELS = ["0", "1", "2"]
 DROPOUT = spacy.util.decaying(0.6, 0.2, 1e-4)
 
@@ -123,10 +123,8 @@ if __name__ == "__main__":
             for epoch in range(MAX_EPOCHS):
                 print(f"Epoch #{epoch + 1}")
                 random.shuffle(train_data)
-                batches = get_batches(train_data)
-                processed_instances = 0
-                for i, batch in enumerate(batches):
-                    processed_instances += len(batch)
+                batches = spacy.util.minibatch(train_data, size=MAX_BATCH_SIZE)
+                for batch in batches:
                     optimizer.pytt_lr = next(learn_rates)
                     texts, annotations = zip(*batch)
                     dropout = next(DROPOUT)
@@ -145,3 +143,5 @@ if __name__ == "__main__":
 
             print("ACCURACY:")
             print(sum(stats) / len(dataset["test"]))
+            with open(f"{corpus}.txt", "w", encoding="utf-8") as f:
+                f.write(f"{sum(stats) / len(dataset['test'])}")
