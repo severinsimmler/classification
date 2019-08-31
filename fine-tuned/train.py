@@ -1,6 +1,7 @@
 from pathlib import Path
 import collections
 import operator
+import logging
 import random
 
 import numpy as np
@@ -16,7 +17,7 @@ if is_using_gpu:
 
 spacy.util.fix_random_seed(23)
 
-MAX_EPOCHS = 100
+MAX_EPOCHS = 50
 LEARN_RATE = 2e-5
 MAX_BATCH_SIZE = 32
 LABELS = ["0", "1", "2"]
@@ -80,10 +81,16 @@ def evaluate(nlp, texts, cats, pos_label):
 
 
 if __name__ == "__main__":
-    for model in ["de_pytt_bertbasecased_lg"]:
+    for model in ["de_pytt_bertbasecased_lg", "xlm-mlm-ende-1024"]:
         for corpus in ["dramen", "romane", "zeitung", "wikipedia"]:
             dataset = preprocessing.load(corpus, split=True, downsample=True)
-            nlp = spacy.load(model)
+            if model == "de_pytt_bertbasecased_lg":
+                nlp = spacy.load(model)
+            else:
+                nlp = PyTT_Language(pytt_name=model, meta={"lang": "de"})
+                nlp.add_pipe(nlp.create_pipe("sentencizer"))
+                nlp.add_pipe(PyTT_WordPiecer.from_pretrained(nlp.vocab, model))
+                nlp.add_pipe(PyTT_TokenVectorEncoder.from_pretrained(nlp.vocab, model))
             textcat = nlp.create_pipe(
                 "pytt_textcat", config={"architecture": "softmax_last_hidden"}
             )
@@ -121,7 +128,7 @@ if __name__ == "__main__":
             losses = collections.Counter()
 
             for epoch in range(MAX_EPOCHS):
-                print(f"Epoch #{epoch + 1}")
+                logging.error(f"Epoch #{epoch + 1}")
                 random.shuffle(train_data)
                 batches = spacy.util.minibatch(train_data, size=MAX_BATCH_SIZE)
                 for batch in batches:
@@ -141,7 +148,8 @@ if __name__ == "__main__":
                 else:
                     stats.append(0)
 
-            print("ACCURACY:")
-            print(sum(stats) / len(dataset["test"]))
-            with open(f"{corpus}.txt", "w", encoding="utf-8") as f:
+            logging.error("ACCURACY:")
+            logging.error(model, corpus)
+            logging.error(sum(stats) / len(dataset["test"]))
+            with open(f"{model}-{corpus}.txt", "w", encoding="utf-8") as f:
                 f.write(f"{sum(stats) / len(dataset['test'])}")
