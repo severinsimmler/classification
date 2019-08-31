@@ -1,5 +1,6 @@
 from pathlib import Path
 import collections
+import operator
 
 import numpy as np
 import spacy
@@ -43,6 +44,38 @@ def get_batches(train_data):
     batch_size = spacy.util.compounding(1, MAX_BATCH_SIZE, 1.001)
     batches = spacy.util.minibatch(train_data, size=batch_size)
     return batches
+
+
+def evaluate(nlp, texts, cats, pos_label):
+    tp = 0.0  # True positives
+    fp = 0.0  # False positives
+    fn = 0.0  # False negatives
+    tn = 0.0  # True negatives
+    total_words = sum(len(text.split()) for text in texts)
+    with tqdm(total=total_words, leave=False) as pbar:
+        for i, doc in enumerate(nlp.pipe(texts, batch_size=batch_size)):
+            gold = cats[i]
+            for label, score in doc.cats.items():
+                if label not in gold:
+                    continue
+                if label != pos_label:
+                    continue
+                if score >= 0.5 and gold[label] >= 0.5:
+                    tp += 1.0
+                elif score >= 0.5 and gold[label] < 0.5:
+                    fp += 1.0
+                elif score < 0.5 and gold[label] < 0.5:
+                    tn += 1
+                elif score < 0.5 and gold[label] >= 0.5:
+                    fn += 1
+            pbar.update(len(doc.text.split()))
+    precision = tp / (tp + fp + 1e-8)
+    recall = tp / (tp + fn + 1e-8)
+    if (precision + recall) == 0:
+        f_score = 0.0
+    else:
+        f_score = 2 * (precision * recall) / (precision + recall)
+    return {"textcat_p": precision, "textcat_r": recall, "textcat_f": f_score}
 
 
 if __name__ == "__main__":
@@ -93,8 +126,21 @@ if __name__ == "__main__":
                 processed_instances = 0
                 for i, batch in enumerate(batches):
                     processed_instances += len(batch)
-                    print(f"{processed_instances}/{len(X)}")
                     optimizer.pytt_lr = next(learn_rates)
                     texts, annotations = zip(*batch)
                     dropout = next(DROPOUT)
-                    nlp.update(texts, annotations, sgd=optimizer, drop=dropout, losses=losses)
+                    nlp.update(
+                        texts, annotations, sgd=optimizer, drop=dropout, losses=losses
+                    )
+
+            stats = list()
+            for _, row in dataset["test"].iterrows():
+                t = nlp(row["text"])
+                pred = int(max(t.cats.items(), key=operator.itemgetter(1))[0])
+                if pred == row["class"]:
+                    stats.append(1)
+                else:
+                    stats.append(0)
+
+            print("ACCURACY:")
+            print(sum(stats) / len(dataset["test"]))
