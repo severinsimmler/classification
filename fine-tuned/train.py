@@ -93,7 +93,7 @@ if __name__ == "__main__":
             for epoch in range(MAX_EPOCHS):
                 logging.error(f"Epoch #{epoch + 1}")
                 random.shuffle(train_data)
-                batches = spacy.util.minibatch(train_data, size=spacy.util.compounding(4., 32., 1.001))
+                batches = spacy.util.minibatch(train_data, size=spacy.util.compounding(1., 64., 1.001))
                 for batch in batches:
                     optimizer.pytt_lr = next(learn_rates)
                     texts, annotations = zip(*batch)
