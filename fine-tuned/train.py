@@ -27,7 +27,7 @@ spacy.util.fix_random_seed(23)
 
 MAX_EPOCHS = 50
 LEARN_RATE = 2e-5
-MAX_BATCH_SIZE = 32
+MAX_BATCH_SIZE = 8
 LABELS = ["0", "1", "2"]
 DROPOUT = spacy.util.decaying(0.6, 0.2, 1e-4)
 
