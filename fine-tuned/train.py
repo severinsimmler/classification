@@ -27,7 +27,7 @@ spacy.util.fix_random_seed(23)
 
 MAX_EPOCHS = 50
 LEARN_RATE = 2e-5
-MAX_BATCH_SIZE = 8
+MAX_BATCH_SIZE = 32
 LABELS = ["0", "1", "2"]
 DROPOUT = spacy.util.decaying(0.6, 0.2, 1e-4)
 
@@ -93,7 +93,7 @@ if __name__ == "__main__":
             for epoch in range(MAX_EPOCHS):
                 logging.error(f"Epoch #{epoch + 1}")
                 random.shuffle(train_data)
-                batches = spacy.util.minibatch(train_data, size=MAX_BATCH_SIZE)
+                batches = spacy.util.minibatch(train_data, size=spacy.util.compounding(4., 32., 1.001))
                 for batch in batches:
                     optimizer.pytt_lr = next(learn_rates)
                     texts, annotations = zip(*batch)
