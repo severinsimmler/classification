@@ -120,7 +120,7 @@ if __name__ == "__main__":
                     else:
                         stats.append(0)
                 SCORES["TEST"].append(sum(stats) / len(dataset["test"]))
-                print(max(TEST_SCORES))
+                print(max(SCORES["TEST"]))
 
             with open(f"{model}-{corpus}.txt", "w", encoding="utf-8") as f:
                 f.write(json.dumps(SCORES, indent=2))
