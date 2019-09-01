@@ -2,13 +2,20 @@ from pathlib import Path
 import collections
 import operator
 import logging
+import json
 import random
+import sys
 
 import numpy as np
 import spacy
-from spacy_pytorch_transformers import PyTT_Language, PyTT_WordPiecer, PyTT_TokenVectorEncoder
+from spacy_pytorch_transformers import (
+    PyTT_Language,
+    PyTT_WordPiecer,
+    PyTT_TokenVectorEncoder,
+)
 import torch
 
+sys.path.insert(0, str(Path(".").absolute()))
 from classification import preprocessing
 
 
@@ -33,52 +40,6 @@ def cyclic_triangular_rate(min_lr, max_lr, period):
         relative = max(0, 1 - x)
         yield min_lr + (max_lr - min_lr) * relative
         it += 1
-
-
-def get_batches(train_data):
-    """This will set the batch size to start at 1, and increase
-    each batch until it reaches a maximum size.
-    """
-    MAX_BATCH_SIZE = 64
-    if len(train_data) < 1000:
-        MAX_BATCH_SIZE /= 2
-    if len(train_data) < 500:
-        MAX_BATCH_SIZE /= 2
-    batch_size = spacy.util.compounding(1, MAX_BATCH_SIZE, 1.001)
-    batches = spacy.util.minibatch(train_data, size=batch_size)
-    return batches
-
-
-def evaluate(nlp, texts, cats, pos_label):
-    tp = 0.0  # True positives
-    fp = 0.0  # False positives
-    fn = 0.0  # False negatives
-    tn = 0.0  # True negatives
-    total_words = sum(len(text.split()) for text in texts)
-    with tqdm(total=total_words, leave=False) as pbar:
-        for i, doc in enumerate(nlp.pipe(texts, batch_size=batch_size)):
-            gold = cats[i]
-            for label, score in doc.cats.items():
-                if label not in gold:
-                    continue
-                if label != pos_label:
-                    continue
-                if score >= 0.5 and gold[label] >= 0.5:
-                    tp += 1.0
-                elif score >= 0.5 and gold[label] < 0.5:
-                    fp += 1.0
-                elif score < 0.5 and gold[label] < 0.5:
-                    tn += 1
-                elif score < 0.5 and gold[label] >= 0.5:
-                    fn += 1
-            pbar.update(len(doc.text.split()))
-    precision = tp / (tp + fp + 1e-8)
-    recall = tp / (tp + fn + 1e-8)
-    if (precision + recall) == 0:
-        f_score = 0.0
-    else:
-        f_score = 2 * (precision * recall) / (precision + recall)
-    return {"textcat_p": precision, "textcat_r": recall, "textcat_f": f_score}
 
 
 if __name__ == "__main__":
@@ -128,6 +89,7 @@ if __name__ == "__main__":
             )
             losses = collections.Counter()
 
+            SCORES = {"TEST": list(), "DEV": list()}
             for epoch in range(MAX_EPOCHS):
                 logging.error(f"Epoch #{epoch + 1}")
                 random.shuffle(train_data)
@@ -139,19 +101,26 @@ if __name__ == "__main__":
                     nlp.update(
                         texts, annotations, sgd=optimizer, drop=dropout, losses=losses
                     )
-            logging.error(losses)
-            stats = list()
-            for _, row in dataset["test"].iterrows():
-                t = nlp(row["text"])
-                pred = int(max(t.cats.items(), key=operator.itemgetter(1))[0])
-                if pred == row["class"]:
-                    stats.append(1)
-                else:
-                    stats.append(0)
+                stats = list()
+                for _, row in dataset["val"].iterrows():
+                    t = nlp(row["text"])
+                    pred = int(max(t.cats.items(), key=operator.itemgetter(1))[0])
+                    if pred == row["class"]:
+                        stats.append(1)
+                    else:
+                        stats.append(0)
+                SCORES["DEV"].append(sum(stats) / len(dataset["val"]))
 
-            logging.error("ACCURACY:")
-            logging.error(model, corpus)
-            logging.error(sum(stats) / len(dataset["test"]))
+                stats = list()
+                for _, row in dataset["test"].iterrows():
+                    t = nlp(row["text"])
+                    pred = int(max(t.cats.items(), key=operator.itemgetter(1))[0])
+                    if pred == row["class"]:
+                        stats.append(1)
+                    else:
+                        stats.append(0)
+                SCORES["TEST"].append(sum(stats) / len(dataset["test"]))
+                print(max(TEST_SCORES))
+
             with open(f"{model}-{corpus}.txt", "w", encoding="utf-8") as f:
-                f.write(f"{sum(stats) / len(dataset['test'])}")
-
+                f.write(json.dumps(SCORES, indent=2))

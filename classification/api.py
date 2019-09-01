@@ -29,11 +29,6 @@ def classic_optimization(
 ) -> Generator[dict, None, None]:
     algorithms = [
         (
-            "Naïve Bayes",
-            MultinomialNB,
-            {"alpha": [0.5, 0.7, 0.9, 1.1, 1.3, 1.5], "fit_prior": [True, False]},
-        ),
-        (
             "Logistic Regression",
             LogisticRegression,
             {
@@ -66,15 +61,13 @@ def classic_optimization(
 
 
 def classic_pipeline(corpus: str, downsample: bool = True, random_state: int = 23):
-    dataset = preprocessing.load(corpus, split=False)
-    if downsample:
-        dataset = preprocessing.downsample(dataset)
+    dataset = preprocessing.load(corpus, split=False, downsample=downsample)
     vectorizer = TfidfVectorizer(tokenizer=preprocessing.tokenize, max_features=10000)
     X, y = vectorizer.fit_transform(dataset["text"]), list(dataset["class"])
     X, y = preprocessing.split(X, y, random_state=23)
 
     random.seed(random_state)
-    prediction = [random.choice([0, 1]) for _ in range(len(y["test"]))]
+    prediction = [random.choice([0, 1, 2]) for _ in range(len(y["test"]))]
 
     yield ("Random", metrics.accuracy_score(y["test"], prediction))
 
