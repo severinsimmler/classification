@@ -47,6 +47,7 @@ if __name__ == "__main__":
         for corpus in ["dramen", "romane", "zeitung", "wikipedia"]:
             if model == "de_pytt_bertbasecased_lg" and corpus == "dramen":
                 continue
+            print(model, corpus)
             dataset = preprocessing.load(corpus, split=True, downsample=True)
             if model == "de_pytt_bertbasecased_lg":
                 nlp = spacy.load(model)
