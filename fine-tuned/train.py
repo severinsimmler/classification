@@ -42,6 +42,21 @@ def cyclic_triangular_rate(min_lr, max_lr, period):
         it += 1
 
 
+def get_batches(train_data):
+    """This will set the batch size to start at 1, and increase
+    each batch until it reaches a maximum size.
+    """
+    MAX_BATCH_SIZE = 64
+    if len(train_data) < 1000:
+        MAX_BATCH_SIZE /= 2
+    if len(train_data) < 500:
+        MAX_BATCH_SIZE /= 2
+    batch_size = spacy.util.compounding(1, MAX_BATCH_SIZE, 1.001)
+    batches = spacy.util.minibatch(train_data, size=batch_size)
+    return batches
+
+
+
 if __name__ == "__main__":
     for model in ["de_pytt_bertbasecased_lg", "xlm-mlm-ende-1024"]:
         for corpus in ["dramen", "romane", "zeitung", "wikipedia"]:
@@ -96,7 +111,7 @@ if __name__ == "__main__":
             for epoch in range(MAX_EPOCHS):
                 logging.error(f"Epoch #{epoch + 1}")
                 random.shuffle(train_data)
-                batches = spacy.util.minibatch(train_data, size=spacy.util.compounding(1., 32., 1.001))
+                batches = get_batches(train_data)
                 for batch in batches:
                     optimizer.pytt_lr = next(learn_rates)
                     texts, annotations = zip(*batch)
