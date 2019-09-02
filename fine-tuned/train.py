@@ -104,15 +104,6 @@ if __name__ == "__main__":
                     nlp.update(
                         texts, annotations, sgd=optimizer, drop=dropout, losses=losses
                     )
-                stats = list()
-                for _, row in dataset["val"].iterrows():
-                    t = nlp(row["text"])
-                    pred = int(max(t.cats.items(), key=operator.itemgetter(1))[0])
-                    if pred == row["class"]:
-                        stats.append(1)
-                    else:
-                        stats.append(0)
-                SCORES["DEV"].append(sum(stats) / len(dataset["val"]))
 
                 stats = list()
                 for _, row in dataset["test"].iterrows():
@@ -122,5 +113,6 @@ if __name__ == "__main__":
                         stats.append(1)
                     else:
                         stats.append(0)
+                print(max(SCORES["TEST"]))
                 SCORES["TEST"].append(sum(stats) / len(dataset["test"]))
             print(SCORES)
