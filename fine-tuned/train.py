@@ -113,6 +113,7 @@ if __name__ == "__main__":
                         stats.append(1)
                     else:
                         stats.append(0)
-                print(max(SCORES["TEST"]))
+
                 SCORES["TEST"].append(sum(stats) / len(dataset["test"]))
+                print(max(SCORES["TEST"]))
             print(SCORES)
