@@ -45,6 +45,8 @@ def cyclic_triangular_rate(min_lr, max_lr, period):
 if __name__ == "__main__":
     for model in ["de_pytt_bertbasecased_lg", "xlm-mlm-ende-1024"]:
         for corpus in ["dramen", "romane", "zeitung", "wikipedia"]:
+            if model == "de_pytt_bertbasecased_lg" and corpus == "dramen":
+                continue
             dataset = preprocessing.load(corpus, split=True, downsample=True)
             if model == "de_pytt_bertbasecased_lg":
                 nlp = spacy.load(model)
