@@ -98,27 +98,30 @@ if __name__ == "__main__":
         losses = collections.Counter()
 
         SCORES = {"TEST": list(), "DEV": list()}
-        for epoch in range(MAX_EPOCHS):
-            logging.error(f"Epoch #{epoch + 1}")
-            random.shuffle(train_data)
-            batches = get_batches(train_data)
-            for batch in batches:
-                optimizer.pytt_lr = next(learn_rates)
-                texts, annotations = zip(*batch)
-                dropout = next(DROPOUT)
-                nlp.update(
-                    texts, annotations, sgd=optimizer, drop=dropout, losses=losses
-                )
+        try:
+            for epoch in range(MAX_EPOCHS):
+                logging.error(f"Epoch #{epoch + 1}")
+                random.shuffle(train_data)
+                batches = get_batches(train_data)
+                for batch in batches:
+                    optimizer.pytt_lr = next(learn_rates)
+                    texts, annotations = zip(*batch)
+                    dropout = next(DROPOUT)
+                    nlp.update(
+                        texts, annotations, sgd=optimizer, drop=dropout, losses=losses
+                    )
 
-            stats = list()
-            for _, row in dataset["test"].iterrows():
-                t = nlp(row["text"])
-                pred = int(max(t.cats.items(), key=operator.itemgetter(1))[0])
-                if pred == row["class"]:
-                    stats.append(1)
-                else:
-                    stats.append(0)
+                stats = list()
+                for _, row in dataset["test"].iterrows():
+                    t = nlp(row["text"])
+                    pred = int(max(t.cats.items(), key=operator.itemgetter(1))[0])
+                    if pred == row["class"]:
+                        stats.append(1)
+                    else:
+                        stats.append(0)
 
-            SCORES["TEST"].append(sum(stats) / len(dataset["test"]))
-            print(max(SCORES["TEST"]))
-        print(SCORES)
+                SCORES["TEST"].append(sum(stats) / len(dataset["test"]))
+                print(max(SCORES["TEST"]))
+            print(SCORES)
+        except KeyboardInterrupt:
+            nlp.to_disk("{corpus}-bert.spacy")
