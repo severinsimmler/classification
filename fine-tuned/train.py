@@ -25,7 +25,7 @@ if is_using_gpu:
 
 spacy.util.fix_random_seed(23)
 
-MODEL_MAPPING = {"bert": "de_pytt_bertbasecased_lg", "xlm": "xlm-mlm-ende-1024"}
+MODEL_MAPPING = {"bert": "de_pytt_bertbasecased_lg", "xlm": "xlm-mlm-ende-1024", "xlnet": "xlnet-base-cased"}
 MAX_EPOCHS = 50
 LEARN_RATE = 2e-5
 MAX_BATCH_SIZE = 64
