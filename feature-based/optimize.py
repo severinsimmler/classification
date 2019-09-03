@@ -13,7 +13,7 @@ from flair.hyperparameter.param_selection import (
 
 
 if __name__ == "__main__":
-    data_folder = Path("classification", "data", "downsampled", "flair")
+    data_folder = Path("..", "classification", "data", "downsampled", "flair")
     for c in ["dramen", "romane", "zeitung", "wikipedia"]:
         test_file = f"{c}-downsampled-test-flair.txt"
         dev_file = f"{c}-downsampled-val-flair.txt"

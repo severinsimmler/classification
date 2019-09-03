@@ -7,7 +7,7 @@ from flair.trainers import ModelTrainer
 
 
 if __name__ == "__main__":
-    data_folder = Path("classification", "data", "downsampled", "flair")
+    data_folder = Path("..", "classification", "data", "downsampled", "flair")
     for c in ["dramen", "romane", "zeitung", "wikipedia"]:
         if c == "dramen":
             dropout = 0.4949748569324362
