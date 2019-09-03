@@ -64,7 +64,7 @@ if __name__ == "__main__":
     print(f"Training {model.upper()} with {corpus} corpus.")
     model = MODEL_MAPPING[model]
     dataset = preprocessing.load(corpus, split=True, downsample=True)
-    if model == "de_pytt_bertbasecased_lg":
+    if model == "de_pytt_bertbasecased_lg" or model == "en_pytt_xlnetbasecased_lg":
         nlp = spacy.load(model)
     else:
         nlp = PyTT_Language(pytt_name=model, meta={"lang": "de"})
