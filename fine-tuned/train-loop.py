@@ -124,4 +124,4 @@ if __name__ == "__main__":
                 print(max(SCORES["TEST"]))
             print(SCORES)
         except KeyboardInterrupt:
-            nlp.to_disk("{corpus}-bert.spacy")
+            nlp.to_disk(f"{corpus}-bert")
