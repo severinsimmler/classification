@@ -49,7 +49,7 @@ if __name__ == "__main__":
         label_dict = corpus.make_label_dictionary()
 
         document_embeddings = DocumentRNNEmbeddings(
-            BertEmbeddings("bert-base-german-cased"),
+            [BertEmbeddings("bert-base-german-cased")],
             hidden_size=hidden_size,
             dropout=dropout,
             rnn_layers=rnn_layers,
@@ -64,6 +64,6 @@ if __name__ == "__main__":
             f"models/{c}",
             learning_rate=learning_rate,
             mini_batch_size=mini_batch_size,
-            max_epochs=100,
+            max_epochs=20,
         )
 
