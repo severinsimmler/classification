@@ -25,7 +25,7 @@ if is_using_gpu:
 
 spacy.util.fix_random_seed(23)
 
-MAX_EPOCHS = 50
+MAX_EPOCHS = 10
 LEARN_RATE = 2e-5
 MAX_BATCH_SIZE = 64
 LABELS = ["0", "1", "2"]
@@ -123,5 +123,15 @@ if __name__ == "__main__":
                 SCORES["TEST"].append(sum(stats) / len(dataset["test"]))
                 print(max(SCORES["TEST"]))
             print(SCORES)
+            nlp.to_disk(f"{corpus}-bert")
+            print("TESTSET")
+            for _, row in dataset["test"].iterrows():
+                t = nlp(row["text"])
+                pred = int(max(t.cats.items(), key=operator.itemgetter(1))[0])
+                print(pred, row["class"])
         except KeyboardInterrupt:
             nlp.to_disk(f"{corpus}-bert")
+            for _, row in dataset["test"].iterrows():
+                t = nlp(row["text"])
+                pred = int(max(t.cats.items(), key=operator.itemgetter(1))[0])
+                print(pred, row["class"])
