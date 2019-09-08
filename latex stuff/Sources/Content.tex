@@ -1,0 +1,238 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Einführung}
+\label{einfuehrung}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ABC
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Theoretische Grundlagen}
+\label{grundlagen}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ABC
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Klassifikation}
+\label{korpora}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ABC
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Machine Learning}
+\label{korpora}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ABC
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Deep Learning}
+\label{korpora}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ABC
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Experimente}
+\label{experimente}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ABC
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Korpora}
+\label{korpora}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ABC
+
+\begin{table}
+\centering
+\begin{tabular}{lllll}
+\toprule
+ &    Dramen &   Romane &  Wikipedia & Zeitung \\
+\midrule
+Fragmente       &     781 &     781 &        781 &      781 \\
+Tokens     &   84711 &   69864 &      91422 &    93263 \\
+Types      &   19867 &    8724 &      25972 &    26857 \\
+Minimum    &      20 &      19 &         35 &       50 \\
+Maximum    &     144 &     290 &        150 &      204 \\
+Durchschnitt &  108 &   89 &     117 &   119 \\
+Standardabweichung &    16 &   38 &      20 &    44 \\
+Klassenverteilung &  304:296:181 &                                  304:296:181 &  304:296:181 &  304:296:181 \\
+\bottomrule
+\end{tabular}
+\caption{%
+Verwendete Korpora. Dramen, Wikipedia und Zeitung wurden auf die Größe des Roman Korpus downgesampled, um einen vergleichbaren Ausgangspunkt annähernd zu gewährleisten. 
+}
+\label{korpusstats}
+\end{table}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Versuchsaufbau}
+\label{versuchsaufbau}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Evaluation}
+\label{evaluation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{table}
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+{} & Dramen  &    Romane &  Wikipedia &  Zeitung\\
+\midrule
+
+Random&  .3544&.3544&.3544&.3544 \\
+Logistic Regression&.6709&.6203&.9241&.7975 \\
+Support Vector Machine&\textbf{.7215}&\textbf{.7089}&.9114&.7848 \\
+BERT (feature-based)&.6962&.6329&\textbf{.9367}&.8101 \\
+BERT (fine-tuned)&.6709&.6203&.9241&\textbf{.9494} \\
+
+\bottomrule
+\end{tabular}
+\caption{TODO!}
+\end{table}
+
+
+
+
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{.45\linewidth}
+\includesvg[width=\linewidth]{/home/severin/Downloads/plots/logistic-regression-dramen.svg}
+\caption{Logistic Regression}\label{fig:drama-log}
+\end{subfigure}
+\begin{subfigure}[b]{.45\linewidth}
+\includesvg[width=\linewidth]{/home/severin/Downloads/plots/svm-dramen.svg}
+\caption{Support Vector Machine}\label{fig:drama-svm}
+\end{subfigure}
+
+\begin{subfigure}[b]{.45\linewidth}
+\includesvg[width=\linewidth]{/home/severin/Downloads/plots/feature-based-dramen.svg}
+\caption{BERT (feature-based)}\label{fig:drama-feat}
+\end{subfigure}
+\begin{subfigure}[b]{.45\linewidth}
+\includesvg[width=\linewidth]{/home/severin/Downloads/plots/fine-tuned-dramen.svg}
+\caption{BERT (fine-tuned)}\label{fig:drama-fine}
+\end{subfigure}
+\caption{Normalisierte Konfusionsmatrizen der verschiedenen Ansätze für das Dramen Korpus; je dunkler ein Feld, desto mehr Fragmente wurden der Klasse in der Spalte bzw. Reihe zugeordnet. Support Vector Machine (b) schneidet hier durchschnittlich am besten ab.}
+\label{fig:drama}
+\end{figure}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{.45\linewidth}
+\includesvg[width=\linewidth]{/home/severin/Downloads/plots/logistic-regression-romane.svg}
+\caption{Logistic Regression}\label{fig:romane-log}
+\end{subfigure}
+\begin{subfigure}[b]{.45\linewidth}
+\includesvg[width=\linewidth]{/home/severin/Downloads/plots/svm-romane.svg}
+\caption{Support Vector Machine}\label{fig:romane-svm}
+\end{subfigure}
+
+\begin{subfigure}[b]{.45\linewidth}
+\includesvg[width=\linewidth]{/home/severin/Downloads/plots/feature-based-romane.svg}
+\caption{BERT (feature-based)}\label{fig:romane-feat}
+\end{subfigure}
+\begin{subfigure}[b]{.45\linewidth}
+\includesvg[width=\linewidth]{/home/severin/Downloads/plots/fine-tuned-romane.svg}
+\caption{BERT (fine-tuned)}\label{fig:romane-fine}
+\end{subfigure}
+\caption{Normalisierte Konfusionsmatrizen der verschiedenen Ansätze für das Roman Korpus; je dunkler ein Feld, desto mehr Fragmente wurden der Klasse in der Spalte bzw. Reihe zugeordnet. Support Vector Machine (b) schneidet hier durchschnittlich am besten ab.}
+\label{fig:roman}
+\end{figure}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+\centering
+\begin{subfigure}[b]{.45\linewidth}
+\includesvg[width=\linewidth]{/home/severin/Downloads/plots/logistic-regression-wikipedia.svg}
+\caption{Logistic Regression}\label{fig:wikipedia-log}
+\end{subfigure}
+\begin{subfigure}[b]{.45\linewidth}
+\includesvg[width=\linewidth]{/home/severin/Downloads/plots/svm-wikipedia.svg}
+\caption{Support Vector Machine}\label{fig:wikipedia-svm}
+\end{subfigure}
+
+\begin{subfigure}[b]{.45\linewidth}
+\includesvg[width=\linewidth]{/home/severin/Downloads/plots/feature-based-wikipedia.svg}
+\caption{BERT (feature-based)}\label{fig:wikipedia-feat}
+\end{subfigure}
+\begin{subfigure}[b]{.45\linewidth}
+\includesvg[width=\linewidth]{/home/severin/Downloads/plots/fine-tuned-wikipedia.svg}
+\caption{BERT (fine-tuned)}\label{fig:wikipedia-fine}
+\end{subfigure}
+\caption{Normalisierte Konfusionsmatrizen der verschiedenen Ansätze für das Wikipedia Korpus; je dunkler ein Feld, desto mehr Fragmente wurden der Klasse in der Spalte bzw. Reihe zugeordnet. Feature-based BERT (c) schneidet hier durchschnittlich am besten ab.}
+\label{fig:roman}
+\end{figure}
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+\centering
+\begin{subfigure}[b]{.45\linewidth}
+\includesvg[width=\linewidth]{/home/severin/Downloads/plots/logistic-regression-zeitung.svg}
+\caption{Logistic Regression}\label{fig:zeitung-log}
+\end{subfigure}
+\begin{subfigure}[b]{.45\linewidth}
+\includesvg[width=\linewidth]{/home/severin/Downloads/plots/svm-zeitung.svg}
+\caption{Support Vector Machine}\label{fig:zeitung-svm}
+\end{subfigure}
+
+\begin{subfigure}[b]{.45\linewidth}
+\includesvg[width=\linewidth]{/home/severin/Downloads/plots/feature-based-zeitung.svg}
+\caption{BERT (feature-based)}\label{fig:zeitung-feat}
+\end{subfigure}
+\begin{subfigure}[b]{.45\linewidth}
+\includesvg[width=\linewidth]{/home/severin/Downloads/plots/fine-tuned-zeitung.svg}
+\caption{BERT (fine-tuned)}\label{fig:zeitung-fine}
+\end{subfigure}
+\caption{Normalisierte Konfusionsmatrizen der verschiedenen Ansätze für das Zeitungs Korpus; je dunkler ein Feld, desto mehr Fragmente wurden der Klasse in der Spalte bzw. Reihe zugeordnet. Fine-tuned BERT (d) schneidet hier durchschnittlich am besten ab.}
+\label{fig:roman}
+\end{figure}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Diskussion}
+\label{diskussion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Ausblick und Fazit}
+\label{ausblick}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\nocite{*}

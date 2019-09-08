@@ -1,0 +1,188 @@
+\documentclass{mimosis}
+
+\usepackage{metalogo}
+\usepackage{svg}
+
+
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ top=25mm,
+ bottom=20mm,
+ right=40mm,
+ left=30mm,
+ footskip=9mm
+ }
+\AtBeginDocument{\fontsize{12pt}{16pt}\selectfont}
+
+\usepackage{pdfpages}
+
+
+\usepackage{algorithmicx, algpseudocode}
+\usepackage[Algorithm,ruled]{algorithm}
+\usepackage{tikz}
+\usetikzlibrary{matrix}
+
+
+\makeatletter
+\renewcommand*{\ps@plain}{%
+  \let\@mkboth\@gobbletwo
+  \let\@oddhead\@empty
+  \def\@oddfoot{%
+    \reset@font
+    \hfil
+    \thepage
+    % \hfil % removed for aligning to the right
+  }%
+  \let\@evenhead\@empty
+  \let\@evenfoot\@oddfoot
+}
+\makeatother
+\pagestyle{plain}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Some of my favourite personal adjustments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% These are the adjustments that I consider necessary for typesetting
+% a nice thesis. However, they are *not* included in the template, as
+% I do not want to force you to use them.
+
+% This ensures that I am able to typeset bold font in table while still aligning the numbers
+% correctly.
+\usepackage{etoolbox}
+
+\usepackage[binary-units=true]{siunitx}
+\DeclareSIUnit\px{px}
+
+\definecolor{link-gray}{HTML}{575757}
+
+\sisetup{%
+  detect-all           = true,
+  detect-family        = true,
+  detect-mode          = true,
+  detect-shape         = true,
+  detect-weight        = true,
+  detect-inline-weight = math,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Hyperlinks & bookmarks
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[%
+  colorlinks = true,
+  citecolor  = link-gray,
+  linkcolor  = link-gray,
+  urlcolor   = link-gray,
+  ]{hyperref}
+
+\usepackage{bookmark}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Bibliography
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% I like the bibliography to be extremely plain, showing only a numeric
+% identifier and citing everything in simple brackets. The first names,
+% if present, will be initialized. DOIs and URLs will be preserved.
+
+\usepackage[%
+  autocite     = plain,
+  backend      = biber,
+  doi          = true,
+  url          = true,
+  giveninits   = true,
+  hyperref     = true,
+  maxbibnames  = 9,
+  maxcitenames = 2,
+  sortcites    = true,
+  style        = authoryear-icomp
+  ]{biblatex}
+
+\input{bibliography-mimosis}
+\bibliography{Thesis}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Fonts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifxetexorluatex
+  \setmainfont{Minion Pro}
+\else
+  \usepackage[lf]{ebgaramond}
+  \newcommand{\fakebf}{\fontfamily{mdugm}\fontseries{b}\selectfont}
+  \DeclareTextFontCommand{\textbf}{\fakebf}
+  \usepackage[oldstyle,scale=0.7]{sourcecodepro}
+  \singlespacing
+\fi
+
+\renewcommand{\th}{\textsuperscript{\textup{th}}\xspace}
+
+\newacronym{NER}{NER}{Named Entity Recognition}
+\newacronym{biLSTM}{biLSTM}{Bidirektionales Long Short-Term Memory Netzwerk}
+\newacronym{DROC}{DROC}{Deutsches Roman Korpus}
+\newacronym{RNN}{RNN}{Rekurrentes neuronales Netzwerk}
+\newacronym{TP}{TP}{True Positive}
+\newacronym{FP}{FP}{False Positive}
+\newacronym{FN}{FN}{False Negative}
+\newacronym{AppTdfW}{AppTdfW}{Appelativ Teil der fiktionalen Welt}
+\newacronym{AppA}{AppA}{Appelativ Abstraktum}
+
+
+
+%\newglossaryentry{LaTeX}{%
+%  name        = {\LaTeX},
+%  description = {A document preparation system},
+%  sort        = {LaTeX},
+%}
+
+%\newglossaryentry{Real numbers}{%
+%  name        = {$\real$},
+%  description = {The set of real numbers},
+%  sort        = {Real numbers},
+%}
+
+\makeindex
+\makeglossaries
+\makeindex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Incipit
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Das Problem begrenzter Daten}
+
+\begin{document}
+
+\frontmatter
+  \include{Sources/Title}
+  %\include{Sources/Abstract}
+  \include{Sources/independence}
+  
+  
+  \selectlanguage{ngerman}
+  \tableofcontents
+  \listoffigures
+  \listoftables
+
+\mainmatter
+
+  \include{Sources/Content}
+
+% This ensures that the subsequent sections are being included as root
+% items in the bookmark structure of your PDF reader.
+\bookmarksetup{startatroot}
+\backmatter
+
+  \begingroup
+    \let\clearpage\relax
+    \glsaddall
+    \printglossary[type=\acronymtype]
+    \newpage
+    \printglossary
+  \endgroup
+
+  \printindex
+  \printbibliography
+
+\end{document}
