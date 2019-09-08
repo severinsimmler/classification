@@ -28,6 +28,11 @@ def classic_optimization(
     dataset: pd.DataFrame, random_state: int
 ) -> Generator[dict, None, None]:
     algorithms = [
+        #(
+        #    "Naïve Bayes",
+        #    MultinomialNB,
+        #    {"alpha": [0.5, 0.7, 0.9, 1.1, 1.3, 1.5], "fit_prior": [True, False]},
+        #),
         (
             "Logistic Regression",
             LogisticRegression,
@@ -76,7 +81,8 @@ def classic_pipeline(corpus: str, downsample: bool = True, random_state: int = 2
         c = classifier(**hyperparameters)
         c.fit(X["train"], y["train"])
         prediction = c.predict(X["test"])
-        yield (name, metrics.accuracy_score(y["test"], prediction))
+        yield name, metrics.confusion_matrix(y_true=y["test"], y_pred=prediction)
+        #yield (name, metrics.accuracy_score(y["test"], prediction))
 
 
 def neural_pipeline(corpus: str, random_state: int = 23, epochs: int = 10):
