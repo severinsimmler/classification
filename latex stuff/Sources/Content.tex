@@ -3,7 +3,16 @@
 \label{einfuehrung}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-ABC
+
+
+
+Aufreißer
+ImageNet Moment für NLP, auch Chance für low resource languages oder DH. Aber stimmt das auch wirklich? Fallstudie mit wenig Daten, Klassifikation mit klassischer Baseline plus zwei Ansätzen deep learning.\\
+
+
+Thema der vorliegenden Arbeit ist das Problem begrenzter Daten---genauer gesagt, führen neuronale Ansätze beim Lösen eines Problems, für das nur ein begrenzter Umfang an Daten verfügbar ist, zu \hspace{0.4mm}b\hspace{0.4mm}e\hspace{0.4mm}s\hspace{0.4mm}s\hspace{0.4mm}e\hspace{0.4mm}r\hspace{0.4mm}e\hspace{0.4mm}n\hspace{0.4mm} Ergebnissen als klassische Algorithmen des maschinellen Lernens? Dies wird zumindest in jüngsten Veröffentlichungen im Feld des sogenannten Deep Learnings proklamiert (Howard, Ruder 2018; Devlin et al. 2018). Konkreter Anwendungsfall dieser Arbeit ist die Klassifikation von Textfragmenten in eine von drei möglichen Klassen mit Datensätzen von jeweils weniger als 800 Instanzen. Untersucht werden zwei für die Digital Humanities relevante, sowie zwei eher generische Korpora, die häufig\footnote{Zum Beispiel Wikipedia in Dang et al. 2016 oder Zeitungsartikel in Lange et al. 2019.} im Forschungsbereich des klassischen Natural Language Processing (NLP) Anwendung finden. \\
+
+Die Arbeit ist in drei große, inhaltliche Teile gegliedert. Im ersten Kapitel (\ref{grundlagen}) werden theoretische Grundlagen und Konzepte besprochen, das Problem der Textklassifikation (\ref{klassifikation}), zwei klassische (\ref{machine}), sowie zwei neuronale Ansätze ({\ref{deep}}) aus dem Bereich des maschinellen Lernenes zur Lösung dieses Problems, und ein Evaluationsmaß (\ref{evaluation}), um die Qualität eines Klassifikators zu bewerten. Im folgenden Kapitel (\ref{experimente}) wird die Datengrundlage (\ref{korpora}), die Vorgehensweise (\ref{versuchsaufbau}), sowie alle Ergebnisse der durchgeführten Experimente (\ref{auswertung}) vorgestellt. Im letzten inhaltlichen Kapitel (\ref{diskussion}) werden die Ergebnisse im Detail diskutiert; hier werden auch Schwächen und Stärken der verschiedenen Ansätze aufgezeigt. Die Arbeit schließt mit einem zusammenfassenden Fazit (\ref{fazit}).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -11,30 +20,83 @@ ABC
 \label{grundlagen}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-ABC
+Im diesem Kapitel werden theoretische Grundlagen geklärt. Nach einer kurzen Einführung in das Problem der Textklassifikation (\ref{klassifikation}) werden die im praktischen Teil (\ref{experimente}) angewendeten sowohl klassischen Algorithmen (\ref{machine}), als auch neuronalen Ansätze (\ref{deep}) aus dem Bereich des maschinellen Lernens konzeptuell besprochen. Allgemein werden auch die nötigen Vorverarbeitungsschritte nachgezeichnet, Hyperparameteroptimierung besprochen, und ein einfaches Evaluationsmaß vorgestellt (\ref{evaluation}), mit dem die Genauigkeit eines trainierten Modells angegeben werden kann. 
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Klassifikation}
-\label{korpora}
+\label{klassifikation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-ABC
+- lineares modell
+- beispielfunktion von goldberg
+- feature representation/engineering + vektorraum
+- tf-idf/embeddings
+-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Machine Learning}
-\label{korpora}
+\label{machine}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-ABC
+- logistische regression
+- svm
+- gridsearch/hyperparameter tuning
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Deep Learning}
-\label{korpora}
+\label{deep}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-ABC
+- bert (warum nicht ulmfit? -> gibts das feature based auch?)
+- gru
+- fine-tuning/feature-based
+- das mit der lernrate + batch size usw./hyperopt
+- DocumentRNNEmbeddings wie geht das überhaupt?
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Evaluationsmetrik}
+\label{evaluation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Um die Qualität der Vorhersage eines Modells zu bewerten, sind zwei verschiedene Sequenzen von Labels für ein unbekanntes\footnote{Die Evaluation mit Trainingsdaten kann zu verfälschten Ergebnissen führen, da das Modell unter Umständen Datenpunkte ‚auswendig‘ gelernt hat.}, zufällig ausgewähltes\footnote{Instanzen des Testsets sollten zufällig aus dem gesamten Datensatz gezogen werden, um einen künstlichen \textit{bias} zu vermeiden.} und gleichverteiltes\footnote{Im Testset sollten vergleichbar viele Instanzen von jeder Klasse wie im Trainingset sein.} Testset erfordelich:
+
+\begin{itemize}
+\item[a)] Die vom Modell gewählten, also die \hspace{0.3mm}w\hspace{0.3mm}a\hspace{0.3mm}h\hspace{0.3mm}r\hspace{0.3mm}s\hspace{0.3mm}c\hspace{0.3mm}h\hspace{0.3mm}e\hspace{0.3mm}i\hspace{0.3mm}n\hspace{0.3mm}l\hspace{0.3mm}i\hspace{0.3mm}c\hspace{0.3mm}h\hspace{0.3mm}s\hspace{0.3mm}t\hspace{0.3mm}e\hspace{0.3mm}n\hspace{0.3mm} Labels.
+\item[b)] Die von einem Menschen gewählten, also die \hspace{0.3mm}k\hspace{0.3mm}o\hspace{0.3mm}r\hspace{0.3mm}r\hspace{0.3mm}e\hspace{0.3mm}k\hspace{0.3mm}t\hspace{0.3mm}e\hspace{0.3mm}n\hspace{0.3mm} Labels.
+\end{itemize}
+
+Bei der Berechnung der $accuracy$ werden nun beide Sequenzen elementweise miteinander verglichen und so gemessen, wie hoch die Übereinstimmung ist (\ref{accuracy}).
+
+\begin{equation}
+\label{accuracy}
+accuracy = \frac{1}{N} \sum\limits_{i=1}^{N} \mathbbm{1}(\hat{y}_{i} = y_{i})
+\end{equation}
+
+
+\begin{equation}
+\label{indikator}
+\mathbbm{1}(\hat{y}_{i} = y_{i}) \coloneqq 
+\begin{cases}
+      1, & \text{if}\ \hat{y}_{i} = y_{i} \\
+      0, & \text{otherwise}
+\end{cases}
+\end{equation}
+
+Hier entspricht $N$ der Größe des Testsets in Instanzen, $\hat{y}_{i}$ der Vorhersage des Klassifikators, und $y_{i}$ dem korrekten Goldlabel der Instanz $i$. Gleichung \ref{indikator} ist die Indikatorfunktion, die $1$ zurückgibt, wenn die Vorhersage dem Goldlabel entspricht, und $0$ wenn nicht. Das heißt, für eine Vorhersage $[0, 0, 0, 0]$, den Goldlabels $[0, 0, 1, 1]$, und entsprechend $N = 4$ berechnet sich die Genauigkeit wie folgt:
+
+
+\begin{equation}
+    \label{eq:eqn1}
+        \begin{aligned}
+            0.5 &= \frac{1}{4} (\mathbbm{1}(0 = 0) + \mathbbm{1}(0 = 0) + \mathbbm{1}(0 = 1) + \mathbbm{1}(0 = 1))                \\
+                       &=\frac{1}{4} (1 + 1 + 0 + 0)                
+        \end{aligned}
+\end{equation}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -42,14 +104,25 @@ ABC
 \label{experimente}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-ABC
+Im diesem Kapitel werden zunächst die verwendeten Korpora näher beschrieben (\ref{korpora}), der Versuchsaufbau erläutert (\ref{versuchsaufbau}), und abschließend die Ergebnisse der durchgeführten Experimente evaluiert (\ref{evaluation}). Eine Diskussion der Ergebnisse im Detail ist dem nachfolgenden Kapitel zu entnehmen (\ref{diskussion}). Der verwendete Code\footnote{\url{https://github.com/severinsimmler/classification}} wird online öffentlich zur Verfügung gestellt.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Korpora}
 \label{korpora}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-ABC
+Die Datengrundlage der durchgeführten Experimente waren insgesamt vier verschiedene, deutschsprachige Korpora, die aus zufällig ausgewählten (aber in sich zusammenhängenden) Textfragmenten bestehen:
+
+
+\begin{itemize}
+\item[a)] \textbf{Dramen}, deren Erstdruck zwischen 1650 und 1815 erschienen ist. Die Texte stammen von TextGrid\footnote{\url{https://textgridrep.org}}. Labels, die jedem Fragment ihr entsprechendes Genre zuordnen, das heißt Komödie, Tragödie oder Schauspiel, wurden aus den TEI Headern extrahiert.
+\item[b)] \textbf{Romane}, die zwischen 1788 und 1984 veröffentlicht wurden, und von Schlör et al. (2019) annotiert wurden. Jedes Fragment entspricht einer Textart, also narrativ, argumentativ oder deskriptiv.
+\item[c)] Artikel von \textbf{Wikipedia}\footnote{\url{https://github.com/papajan3000/german_text_classification_nlp/blob/master/dl_dataset/wikicorpus_v2.csv}}, die im Rahmen eines Seminars des Masterstudiengangs Digital Humanities im Wintersemester 2018/2019 gesammelt wurden, entsprechen den Kategorien Gemälde, Oper oder Literatur.
+\item[d)] Zeitgenössische \textbf{Zeitungsartikel}\footnote{\url{https://ofai.github.io/million-post-corpus}}, die aus einem Korpus der österreichischen Tageszeitung Der Standard, erstellt von Schabus et al. (2017), stammen. Sparten sind hier Kultur, Panorama und Wissenschaft.
+\end{itemize}
+
+Korpora a) und b) sind in erster Linie für die Digital Humanities interessant, enthalten teilweise ältere Sprache, sind syntaktisch und semantisch eher komplex konstruiert, wohingegen c) und d) moderner, sachlicher, wenn nicht sogar einfacher Sprache entspricht. a), c) und d) wurden auf die Größe des kleinsten Korpus, b), \textit{downgesampled}, um einen vergleichbaren Ausgangspunkt zu gewährleisten. Wenn ein Korpus mehr Datenpunkte hat als das andere, sind die entsprechenden Modelle nicht vergleichbar, da das größere Korpus schon aufgrund der größeren Datengrundlage im Vorteil ist\footnote{Vergleichbar unter Laborbedingungen sind die Korpora trotzdem nicht, da beispielsweise die Komplexität der Sprache nicht berücksichtigt wird.}. Jedes Korpus wurde im Verhältnis 80:10:10 in Training-, Validation- und Testset aufgeteilt\footnote{Mit \textit{random seed} $23$.}. Nähere Details sind Tabelle \ref{korpusstats} zu entnehmen.
 
 \begin{table}
 \centering
@@ -74,20 +147,29 @@ Verwendete Korpora. Dramen, Wikipedia und Zeitung wurden auf die Größe des Rom
 \end{table}
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Versuchsaufbau}
 \label{versuchsaufbau}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Zum Vergleich stehen zwei Algorithmen aus dem klassischen Machine Learning, logistische Regression und Support Vector Machine, sowie zwei Ansätze aus dem Bereich des Deep Learning, ein GRU mit BERT\footnote{Hier kam nicht das klassische, multi-linguale BERT zum Einsatz, sondern von Grund auf neu ausschließlich mit deutschen Texten trainiertes Modell. Das von Deepset zur Verfügung gestellte Modell wurde für etwa neun Tage auf 6 GB Wikipedia, 2.4 GB Gerichtsprotokollen und 3.6 GB Zeitungsartikeln trainiert (https://deepset.ai/german-bert). Hier schneidet die deutsche Variante beispielsweise bei einer multiclass sentiment classification um 2.7\% besser ab als die multi-linguale Version. "Although the multilingual models released by Google have increased vocab sizes (> 100k tokens) and cover quite a lot of German text, we realized its limitations. Especially when words are chunked into small parts, we believe the model will have a difficult time making sense of the individual chunks."} als embedding layer (feature-based), sowie BERT selbst, das mit den jeweiligen Trainingsdaten fine-tuned wurde.\\
 
+Als Tokenizer wurde für alle vier Modelle der von spaCy verwendet (This is done by applying rules specific to each language. For example, punctuation at the end of a sentence should be split off – whereas “U.K.” should remain one token. First, the raw text is split on whitespace characters, similar to text.split(' '). Then, the tokenizer processes the text from left to right. On each substring, it performs two checks: Does the substring match a tokenizer exception rule? For example, “don’t” does not contain whitespace, but should be split into two tokens, “do” and “n’t”, while “U.K.” should always remain one token. Can a prefix, suffix or infix be split off? For example punctuation like commas, periods, hyphens or quotes. Beispiel: "Wie geht's in N.Y.?" -> " Wie geht 's in N.Y. ? ").\\
 
+Als Features für die logistische Regression und SVM dienten Termhäufigkeiten mit einer TF-IDF Gewichtung\footnote{Hier wurde kein Feature Engineering betrieben, da dieser Ansatz lediglich als Baseline dienen soll. Daniel et al. kommen mit aufwendigem Engineering mit einer SVM auf 88\% (???) Genauigkeit.}; Hyperparameter beider Algorithmen wurden im Rahmen einer Rastersuche optimiert. Umgesetzt wurde alles mit scikit-learn.\\
+Bei dem feature-basierten Ansatz mit den deutschen BERT embeddings 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Evaluation}
-\label{evaluation}
+\section{Auswertung}
+\label{auswertung}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Verglichen werden hier die besten klassischen mit den besten neuronalen Ansätzen. Die Ergebnisse der Experimente sind Tabelle \ref{scoretable} zu entnehmen. Neben den vier vorgestellten Ansätzen wurde ein Klassifikator mit dem Accuracy Score entsprechend Gleichung \ref{accuracy} evaluiert, der für jede Testinstanz zufällig ein Label wählt. Der beste Ansatz für das Dramen Korpus ist die SVM, die feature-based BERT um 1.63\% accuracy outperformed. Ebenfalls am besten hat die SVM für die Romane (vgl. Schlör et al.) abgeschnitten, mit 7.59\% höherem accuracy score. Der feature-based BERT Ansatz hat für Wikipedia Artikel eine Verbesserung um 1.26\% gegenüber der logistischen Regression eingebracht. Die mit Abstand deutlichste Verbesserung hat fine-tuned BERT mit 15.19\% gegenüber der logistischen Regression gezeigt.
+
 
 \begin{table}
+\label{scoretable}
 \centering
 \begin{tabular}{lrrrr}
 \toprule
@@ -109,6 +191,26 @@ BERT (fine-tuned)&.6709&.6203&.9241&\textbf{.9494} \\
 
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Diskussion}
+\label{diskussion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Was ist in dem Kapitel?
+
+
+\section{Beobachtungen}
+\label{beobachtungen}
+- problematisch bei BERT weil nur 512 tokens??
+- Deep Learning und transfer learning mag ja noch so gut sein, bringt für DH aber nix, weil die Sachen nicht transferierbar sind.
+- Proposal: bei lowe resource languages (ist ja "altes deutsch") ist man immer noch hinten dran
+- Deep Learning nur gut wenn man krass viele Daten hat (Wikipedia: easy), gibt aber nur endlich viele Romane, geschweige denn digitalisiert
+- Classic ist viel schneller
+
+
+
+\subsection{Dramen}
+\label{dramen_diskussion}
 \begin{figure}
 \centering
 \begin{subfigure}[b]{.45\linewidth}
@@ -137,7 +239,7 @@ BERT (fine-tuned)&.6709&.6203&.9241&\textbf{.9494} \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+\subsection{Romane}
 \begin{figure}
 \centering
 \begin{subfigure}[b]{.45\linewidth}
@@ -165,6 +267,7 @@ BERT (fine-tuned)&.6709&.6203&.9241&\textbf{.9494} \\
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Wikipedia}
 \begin{figure}
 \centering
 \begin{subfigure}[b]{.45\linewidth}
@@ -192,7 +295,7 @@ BERT (fine-tuned)&.6709&.6203&.9241&\textbf{.9494} \\
 
 
 
-
+\subsection{Zeitung}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}
 \centering
@@ -222,17 +325,12 @@ BERT (fine-tuned)&.6709&.6203&.9241&\textbf{.9494} \\
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Diskussion}
-\label{diskussion}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Ausblick und Fazit}
-\label{ausblick}
+\label{fazit}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+- k-fold?
+- language modell auf relativ großem korpus weitertrainieren und dann erst fine-tunen
+- testen auf den abgeschnittenen Daten, zumindest für alle außer Romane
 
 
 \nocite{*}
