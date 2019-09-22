@@ -1,62 +1,172 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Einführung}
 \label{einfuehrung}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{quote}
+  A new era of NLP has just begun a few days ago: large pretraining models (Transformer 24 layers, 1024 dim, 16 heads) + massive compute is all you need. BERT from @GoogleAI: SOTA results on everything.
+\begin{flushright}--- Thang Luong, Oktober 2018 auf Twitter\footnote{\url{https://twitter.com/lmthang/status/1050543868041555969}}\end{flushright}
+\end{quote}
+
+\vspace{0.4cm}
+
+\noindent Die \textit{new era of NLP}, von der Luong im einleitenden Zitat spricht, ist undurchsichtig, rechenaufwendig, datenhungrig, und der Fortschritt schreitet mit beängstigend guten Ergebnissen rasant voran---BERT (Devlin et al. 2018) wurde nur sieben Monate nach dessen Veröffentlichung von XLNet (Yang et al. 2019) vom Thron gestoßen. Noch bis in die 1970er Jahre zum großen Teil regelbasiert mit linguistischer Expertise betrieben (Winograd 1971), entwickelte sich das Feld des NLP (\textit{natural language processing}) über korpusbasierte, statistische Verfahren (Hindle 1991) schließlich etwa um die Jahrtausendwende hin zum maschinellen Lernen (Lafferty et al. 2001).
+
+Wir sind nun also in einer \textit{new era} angekommen, der Ära des Deep Learning, der Ära, die derart komplexe wie verblüffende Modelle hervorbringt, der Ära, in der sich das Hauptgeschäft der Linguistik, die Sprache als System, immer mehr und mehr in den Fachbereich der Informatik ausbreitet. Sogenannte probabilistische Sprachmodelle, die auf gewaltigen Sammlungen von rohen Textdaten trainiert werden, und so Informationen über Sprache auf verschiedenen Ebenen abbilden, die einem beliebigen \textit{downstream task} zunutze gemacht werden können; ,,these [recent empirical improvements due to transfer learning with language models] enable even low-resource tasks to benefit from deep unidirectional architectures'' (Devlin et al. 2018, 9). Aber ist ein vortrainiertes BERT Modell tatsächlich so generisch, dass jeder \textit{low-resource task} davon profitieren kann?
+
+In der vorliegenden Arbeit wird untersucht, gegeben ein Problem mit begrenztem Umfang an Daten, ob ein neuronaler Ansatz aus dem Bereich des maschinellen Lernens wie ein Sprachmodell zu \hspace{0.4mm}b\hspace{0.4mm}e\hspace{0.4mm}s\hspace{0.4mm}s\hspace{0.4mm}e\hspace{0.4mm}r\hspace{0.4mm}e\hspace{0.4mm}n\hspace{0.4mm} Ergebnissen führen kann als klassische Algorithmen. Konkreter Anwendungsfall ist die Klassifikation von Textfragmenten in eine von drei möglichen Klassen mit einem Datensatz von weniger als 800 Instanzen. Grundlage sind zwei für die Digital 
+Humanities relevante, sowie zwei häufig\footnote{Zum Beispiel Wikipedia in Dang et al. 2016 oder Zeitungsartikel in Lange et al. 2019.} im Forschungsbereich des klassischen NLP verwendete Korpora.
+
+Die Arbeit ist in drei große, inhaltliche Teile gegliedert. Im ersten Kapitel (\ref{grundlagen}) werden theoretische Grundlagen 
+und Konzepte besprochen: das Problem der Textklassifikation (\ref{klassifikation}), zwei klassische (\ref{logistischeregression}, \ref{supportvectormachine}), sowie 
+zwei neuronale Ansätze (\ref{featurebasedbert}, \ref{finetunebert}) des maschinellen Lernens zur Lösung dieses Problems, und ein Evaluationsmaß (\ref{evaluation}), 
+um die Qualität eines Klassifikators zu bewerten. Im nachfolgenden Kapitel (\ref{experimente}) wird die Datengrundlage (\ref{korpora}), 
+die Vorgehensweise (\ref{versuchsaufbau}), sowie alle Ergebnisse der durchgeführten Experimente (\ref{auswertung}) vorgestellt. 
+Im letzten inhaltlichen Kapitel (\ref{diskussion}) werden die Ergebnisse im Detail diskutiert; hier werden auch Schwächen und Stärken 
+der verschiedenen Ansätze aufgezeigt. Die Arbeit schließt mit einem zusammenfassenden Fazit (\ref{fazit}).
 
 
-
-
-Aufreißer
-ImageNet Moment für NLP, auch Chance für low resource languages oder DH. Aber stimmt das auch wirklich? Fallstudie mit wenig Daten, Klassifikation mit klassischer Baseline plus zwei Ansätzen deep learning.\\
-
-
-Thema der vorliegenden Arbeit ist das Problem begrenzter Daten---genauer gesagt, führen neuronale Ansätze beim Lösen eines Problems, für das nur ein begrenzter Umfang an Daten verfügbar ist, zu \hspace{0.4mm}b\hspace{0.4mm}e\hspace{0.4mm}s\hspace{0.4mm}s\hspace{0.4mm}e\hspace{0.4mm}r\hspace{0.4mm}e\hspace{0.4mm}n\hspace{0.4mm} Ergebnissen als klassische Algorithmen des maschinellen Lernens? Dies wird zumindest in jüngsten Veröffentlichungen im Feld des sogenannten Deep Learnings proklamiert (Howard, Ruder 2018; Devlin et al. 2018). Konkreter Anwendungsfall dieser Arbeit ist die Klassifikation von Textfragmenten in eine von drei möglichen Klassen mit Datensätzen von jeweils weniger als 800 Instanzen. Untersucht werden zwei für die Digital Humanities relevante, sowie zwei eher generische Korpora, die häufig\footnote{Zum Beispiel Wikipedia in Dang et al. 2016 oder Zeitungsartikel in Lange et al. 2019.} im Forschungsbereich des klassischen Natural Language Processing (NLP) Anwendung finden. \\
-
-Die Arbeit ist in drei große, inhaltliche Teile gegliedert. Im ersten Kapitel (\ref{grundlagen}) werden theoretische Grundlagen und Konzepte besprochen, das Problem der Textklassifikation (\ref{klassifikation}), zwei klassische (\ref{machine}), sowie zwei neuronale Ansätze ({\ref{deep}}) aus dem Bereich des maschinellen Lernenes zur Lösung dieses Problems, und ein Evaluationsmaß (\ref{evaluation}), um die Qualität eines Klassifikators zu bewerten. Im folgenden Kapitel (\ref{experimente}) wird die Datengrundlage (\ref{korpora}), die Vorgehensweise (\ref{versuchsaufbau}), sowie alle Ergebnisse der durchgeführten Experimente (\ref{auswertung}) vorgestellt. Im letzten inhaltlichen Kapitel (\ref{diskussion}) werden die Ergebnisse im Detail diskutiert; hier werden auch Schwächen und Stärken der verschiedenen Ansätze aufgezeigt. Die Arbeit schließt mit einem zusammenfassenden Fazit (\ref{fazit}).
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Theoretische Grundlagen}
 \label{grundlagen}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Im diesem Kapitel werden theoretische Grundlagen geklärt. Nach einer kurzen Einführung in das Problem der 
+Textklassifikation (\ref{klassifikation}) werden die im praktischen Teil (\ref{experimente}) angewendeten sowohl klassischen 
+Algorithmen (\ref{logistischeregression}, \ref{supportvectormachine}), als auch neuronalen Ansätze (\ref{featurebasedbert}, \ref{finetunebert}) aus dem Bereich des maschinellen Lernens konzeptuell 
+besprochen. Allgemein werden auch die typischen Vorverarbeitungsschritte nachgezeichnet, Methoden der Hyperparameteroptimierung vorgestellt, 
+sowie ein einfaches Evaluationsmaß (\ref{evaluation}), mit dem die Genauigkeit eines trainierten Modells angegeben 
+werden kann.
 
-Im diesem Kapitel werden theoretische Grundlagen geklärt. Nach einer kurzen Einführung in das Problem der Textklassifikation (\ref{klassifikation}) werden die im praktischen Teil (\ref{experimente}) angewendeten sowohl klassischen Algorithmen (\ref{machine}), als auch neuronalen Ansätze (\ref{deep}) aus dem Bereich des maschinellen Lernens konzeptuell besprochen. Allgemein werden auch die nötigen Vorverarbeitungsschritte nachgezeichnet, Hyperparameteroptimierung besprochen, und ein einfaches Evaluationsmaß vorgestellt (\ref{evaluation}), mit dem die Genauigkeit eines trainierten Modells angegeben werden kann. 
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Klassifikation}
 \label{klassifikation}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Bei der Textklassifikation geht es darum, einem Dokument eine von $k$ zuvor festgelegten Klassen zuzuweisen, die das Dokument auf einer bestimmten Ebene beschreibt. Gegeben sei beispielsweise der Roman ,Der Mann ohne Eigenschaften` von Robert Musil und Johann Wolfgang von Goethes ,Wilhelm Meisters Lehrjahre`---die korrekte Genreklassifikation wäre Gesellschaftsroman für ersteren, Bildungsroman für letzteren. Durch entsprechende Domänenexpertise, Allgemeinwissen, Privatstudien etc. ist eine solche Klassifikation durch Menschen relativ zuverlässig. Soll die Klassifikation automatisch, das heißt algorithmisch von einer Maschine geschehen, sind folgende Arbeitsschritte erforderlich:
 
-- lineares modell
-- beispielfunktion von goldberg
-- feature representation/engineering + vektorraum
-- tf-idf/embeddings
--
+\begin{itemize}
+  \item[1)] Definieren des Klassifikationproblems, einschließlich Festlegen der $k$ Klassen.
+  \item[2)] Erstellen eines umfangreichen Korpus, das im Idealfall eine repräsentative Stichprobe für das Problem darstellt.
+  \item[3)] Manuelle Annotation, das heißt jedem Text wird in der Regel durch Menschenhand entsprechend eine der $k$ Klassen zugeteilt.
+  \item[4)] Aufteilen des Datensatzes in ein Training-, Test- und ggf. Validierungsset.
+  \item[5)] Auswahl eines geeigneten Algorithmus.
+  \item[6)] Trainieren des Algorithmus auf dem Trainingsset unter Berücksichtigung der manuell zugeteilten Labels.
+  \item[7)] Evaluation des trainierten Modells mit einem entsprechenden Maß.
+\end{itemize}
+
+Jeder Datenpunkt bzw. jede Instanz des Datensatzes wird durch bestimmte Eigenschaften, sogenannte \textit{features}, in numerischer Form beschrieben. Wie gut ein Algorithmus für ein bestimmtes Problem funktioniert, wird maßgeblich davon beeinflusst, wie 
+\hspace{0.4mm}g\hspace{0.4mm}u\hspace{0.4mm}t\hspace{0.4mm} \textit{features} einen Datensatz beschreiben: ,,The choice of the features 
+is crucial to the success of the classification accuracy, and is driven by the informativeness of the features, and their availability to us'' 
+(Goldberg 2017, 18). Das womöglich einfachste Verfahren Textdaten numerisch darzustellen, ist das Ermitteln der Worthäufigkeiten 
+(\textit{bag-of-words}), und die Überführung in eine sogenannte Dokument-Term Matrix; hier repräsentiert eine Reihe ein Dokument, eine Spalte einen Term, das heißt ein Wort, und Werte die Häufigkeit des Terms im entsprechenden Dokument. Da die Verteilung der Worte in einem Textkorpus 
+dem Zipfschen Gesetz (Zipf 1935) folgen, gibt es wenige Worte, die sehr oft, und viele, die sehr selten auftreten. Wenn nun ein Term in 
+jedem Dokument des Korpus sehr häufig auftritt, also sehr generisch ist, ist es ein entsprechend schlechtes und unrepräsentatives \textit{feature} für ein Dokument. Eine Möglichkeit, um den Einfluss dieser Terme abzuschwächen, ist die $tfidf$ Gewichtung (\ref{tfidf}), die sowohl lokale ($tf$, \textit{term frequency}), als auch globale ($idf$, \textit{inverse document frequency}) Häufigkeiten berücksichtigt.
+
+\begin{equation}
+\label{tfidf}
+tfidf( t, d, D ) = tf( t, d ) \times idf( t, D )
+\end{equation}
+\begin{equation}
+\label{idf}
+idf( t, D ) = log \frac{ \text{| } D \text{ |} }{ \text{| } \{ d \in D : t \in d \} \text{ |} }
+\end{equation}
+
+Der Zähler in Gleichung \ref{idf} stellt die Gesamtzahl der Dokumente im Korpus dar, und der Nenner die Anzahl der Dokumente, 
+in denen Term $t$ mindestens einmal auftritt. Damit berechnet sich der $tfidf$ Wert für einen Term $t$ mit der Häufigkeit 
+$tf$ 100 in Dokument $d$ in einem Korpus $D$ mit insgesamt 100 Texten wie folgt; $t$ tritt außerdem in insgesamt 90 Dokumenten mindestens 
+einmal auf.
+
+\begin{equation}
+  \label{eq:eqn2}
+    \begin{aligned}
+      10.54 &= 100 \times 0.1054        \\
+            &=100 \times \log \frac{100}{90}        
+    \end{aligned}
+\end{equation}
+
+Ein Term, der im Vergleich eine geringere inverse Dokumenthäufigkeit aufweist, trete $t$ in nur 10 Texten auf, 
+bekommt ein höheres Gewicht:
+
+\begin{equation}
+  \label{eq:eqn3}
+    \begin{aligned}
+      230.26 &= 100 \times 2.30        \\
+            &=100 \times \log \frac{100}{10}        
+    \end{aligned}
+\end{equation}
+
+Ein Textkorpus kann also als Matrix, und ein einzelner Text als $n$-dimensionaler\footnote{$n$ entspricht der Größe des Vokabulars des Korpus.}, dünnbesetzter\footnote{Dünnbesetzt, da in einem Dokument nur ein kleiner Teil des Korpusvokabulars verwendet wird, alle Texte aber in denselben Vektorraum projiziert werden.} Vektor repräsentiert werden, der allerdings syntaktische Informationen nicht abbildet, da die Dimensionen des Vektors für alle Instanzen in derselben Reihenfolge festgelegt sind. Es wird außerdem vorausgesetzt, dass Worte unabhängig voneinander sind---was beispielsweise dem Konzept von Synonymen widerspricht. Wird ein Term nun in einem kontextabhängigen Raum eines 
+sogenannten \textit{word embeddings} abgebildet, bleiben sowohl syntaktische, als auch semantische Informationen erhalten, indem die dichtbesetzte Vektorrepräsentation, je nachdem von welchen anderen Worten der Term umgeben ist, variiert. Damit wird \textit{feature engineering} zunächst überflüssig, da Eigenschaften des Terms durch das \textit{embedding} bereits repräsentiert sind.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Machine Learning}
-\label{machine}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Nachfolgend werden insgesamt vier Ansätze vorgestellt, die Dokumente anhand der Ausprägung bestimmter \textit{features} klassifizieren. Ausgangspunkt ist dabei immer ein Trainings-, Validierungs- und Testset, wobei die ersteren zwei für Training und Optimierung während des Trainings, und letzteres dafür verwendet wird, um die Qualität des Klassifikators zu bewerten.
 
-- logistische regression
-- svm
-- gridsearch/hyperparameter tuning
+\subsection{Logistische Regression}
+\label{logistischeregression}
+Die logistische Regression ist ein mathematisches Modell, das die Beziehung zwischen einer abhängigen und einer oder mehreren unabhängigen Variablen beschreibt (Hosmer et al. 2013, 1). Im Kontext der Textklassifikation ist die abhängige Variable eine Klasse $k$, und die unabhängigen Variablen die \textit{features}, die ein Dokument beschreiben, also ein Dokumentvektor $\vec{d}$. Die Beziehung wird durch eine Wahrscheinlichkeit $P(k \mid \vec{d})$ dargestellt, dass $\vec{d}$ Klasse $k$ angehört. Zentral für die logistische Regression sind zwei Koeffizienten, $\beta_{0}$ und $\beta_{1}$, die mithilfe der sogenannten \textit{maximum likelihood} Methode ermittelt werden, indem die Wahrscheinlichkeit maximiert wird, gegeben $k$, den Vektor $\vec{d}$ zu erhalten (Hosmer et al. 2013, 35). Für jede Instanz in den Trainingsdaten wird $\beta_{0}$ und $\beta_{1}$ iterativ so angepasst, dass das gegebene, korrekte Label für den entsprechenden Text am wahrscheinlichsten ist.
+
+Ist nun beispielsweise zwischen drei Klassen $k \in \{a, b, c\}$ zu unterscheiden, kann das sogenannte \textit{one vs. rest} Schema zum Einsatz kommen. Das Modell ermittelt für einen Text $\vec{d}$ insgesamt drei Wahrscheinlichkeiten:
+
+\begin{equation}
+  \label{eq:eqn1}
+    \begin{aligned}
+      P(a \mid \vec{d}) &= 0.99        \\
+      P(b \mid \vec{d}) &= 0.33        \\
+      P(c \mid \vec{d}) &= 0.22                
+    \end{aligned}
+\end{equation}
+
+Da die Wahrscheinlichkeit, dass Dokument $\vec{d}$ der Klasse $a$ angehört am höchsten ist, ist dies die finale Klassifikation des Modells.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Deep Learning}
-\label{deep}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Support Vector Machine}
+\label{supportvectormachine}
 
-- bert (warum nicht ulmfit? -> gibts das feature based auch?)
-- gru
-- fine-tuning/feature-based
-- das mit der lernrate + batch size usw./hyperopt
-- DocumentRNNEmbeddings wie geht das überhaupt?
+Bei einer Support Vector Machine (SVM) werden Datenpunkte in einem $n$-dimensionalen Raum durch eine sogenannten Hyperebene separiert\footnote{In der Realität können Datenpunkte in der Regel nicht linear separiert werden. In diesem Fall können sogenannte Kernel Tricks zum Einsatz kommen, von denen nach Schölkopf und Smola (2002) der polynomiale am häufigsten eingesetzt wird. Hier wird aus den gegebenen \textit{features} durch eine polynomiale Kombination ein neues Set von Features generiert, die im Raum so verteilt sind, dass sie linear separierbar sind.}. Punkte, die auf der einen Seite liegen, gehören zur einen, Punkte die auf der anderen Seite liegen, zur anderen Klasse. Abbildung \ref{fig:svm} ist eine entsprechende Visualisierung zu entnehmen. Während des Trainings einer SVM wird die Hyperebene so ermittelt, dass der Abstand zu den Stützvektoren maximiert wird; Stützvektoren sind jene Datenpunkte, die am nächsten zur Hyperebene liegen (Vapnik, 1998).
+
+Auch hier kann, wie bei der wahrscheinlichkeitsbasierten logistischen Regression, das \textit{one vs. rest} Schmema für Porbleme mit mehr als zwei Klassen angewendet werden.
 
 
+\begin{figure}
+  \centering
+  \includesvg[width=8cm]{/home/severin/Downloads/plots/svm.svg}
+  \caption{2-dimensionaler Raum, in dem Datenpunkte von insgesamt zwei Klassen dargestellt sind (grau und schwarz). Die Punkte werden durch eine gelernte Hyperebene getrennt (blau).}
+  \label{fig:svm}
+  \end{figure}
+
+\subsection{Gated Recurrent Unit}
+\label{featurebasedbert}
+Beim klassischen \textit{bag-of-words} Modell wird ein Token durch eine einzige Zahl, etwa der absoluten oder gewichteten Häufigkeit, dargestellt, und ein Dokument entsprechend als Vektor von Worthäufigkeiten. Ein \textit{word embedding} hingegen bettet einen einzigen Token in einen hochdimensionalen Raum ein, und gibt einen hochdimensionalen Vektor zurück. Durch eine ,,pooling operation [for example the arithmetic mean] over all word embeddings in a document'' (Akbik 2019) können nun alle Tokens auf einen einzigen Vektor reduziert werden, der das gesamte Dokument repräsentiert.
+
+Gegeben sei ein Dokument $d$, das aus insgesamt zwei Tokens, $t_{1}$ und $t_{2}$, mit entsprechend $\vec{t_{1}}$ und $\vec{t_{2}}$ besteht, ergibt sich die Repräsentation des Dokuments, $\vec{d}$, indem das arithmetische Mittel aller Wortvektoren gebildet wird, also zum Beispiel:
+
+\begin{equation}
+  \label{eq:eqn1}
+    \vec{d} = \frac{1}{2} (\vec{t_{1}} + \vec{t_{2}})
+\end{equation}
+
+Im Unterschied zur logistischen Regression oder SVM, bei denen während des Trainings optimale Koeffizienten bzw. eine Hyperebene ermittelt wird, werden bei künstlichen neuronalen Netzen Zellgewichte optimiert. Konzeptuell unterscheidet sich hier ein neuronales Netz grundlegend. Bestehend aus einer oder mehreren Schichten, sind einzelne Zellen einer Schicht teilweise oder vollständig miteinander verbunden. Durch diese Verbindungen werden Informationen durch das gesamte Netzwerk prozessiert.
+
+Die Gated Recurrent Unit (GRU) Architektur (Cho et al. 2014) eines künstlichen neuronalen Netzwerks ist vergleichbar mit der Long-Short Term Memory (LSTM) von Hochreiter und Schmidhuber (1997). Wenn etwa ein Satz sehr lang ist, sind unter Umständen wichtige Informationen vom Anfang bereits verworfen worden, wenn das Netzwerk die letzten Teile des Satzes verarbeitet. Sowohl bei einem LSTM- als auch bei einem GRU-basierten Netzwerk sind Mechanismen integriert, die den Informationsfluss regulieren, das heißt welche Informationen für die Bedeutung des Satzes wichtig sind. Dies wird von sogenannten \textit{gates} kontrolliert.
+
+Bei einem LSTM entscheidet das \textit{forget gate}, welche Informationen verworfen, und das \textit{input gate}, welche neue Informationen berücksichtigt werden. Bei einem GRU hingegen werden beide Entscheidungen von einem einzigen, dem \textit{update gate} getroffen (Goldberg 2017, 181). Dadurch ist ein GRU weniger komplex, effizienter zu trainieren, liefert aber nach Jozefowicz et al. (2015) vergleichbar gute, teilweise sogar bessere Ergebnisse als ein LSTM.
+
+
+
+\subsection{Bidirectional Encoder Representations from Transformers}
+\label{finetunebert}
+Ein neuronales Netzwerk wird trainiert, um eine bestimmte Aufgabe, etwa die Klassifizierung von Texten, zu lösen. Dafür werden die Gewichte des Netzwerks zunächst zufällig initialisiert, und Schritt für Schritt aktualisiert, das heißt optimiert, um die Fehlerrate des Modells zu minimieren\footnote{Hierfür werden sogenannte \textit{loss} Funktionen verwendet, die angeben, wie groß die Fehlerrate des Klassifikators ist.}.
+
+Statt für einen anderen Datensatz, mit einer anderen Art von Texten und andere Klassen, genau gleich vorzugehen, und die Gewichte zufällig zu initialisieren, können stattdessen die für das andere Problem bereits optimierten Gewichte verwendet werden, da angenommen wird, dass diese mindestens so nützlich sind wie die zufällig gewählten. Dieses Verfahren nennt man \textit{transfer learning}, da bereits vortrainierte Modelle verwendet werden, und die Informationen auf ein anderes Problem transferiert werden.
+
+Bidirectional Encoder Representations from Transformers bzw. BERT (Devlin et al. 2018) zählt zu den sogenannten kontextabhängigen Sprachmodellen, und wurde für zwei Probleme optimiert:
+
+\begin{itemize}
+  \item[1) ] \textit{Masked language modeling}, Tokens in einer Eingabesequenz werden zufällig maskiert, und Ziel ist es, das ursprüngliche Wort vorherzusagen, gegeben die Kontextwörter.
+  \item[2) ] \textit{Next sentence prediction}, gegeben zwei Sätze, wird binär klassifiziert, ob es Sinn macht, dass der eine auf den anderen Satz folgt.
+\end{itemize}
+
+Kontextabhänig heißt nun, dass, je nachdem mit welchen Wörtern ein Token in der Eingabesequenz auftritt, die Vektorrepräsentation entsprechend variiert.
+
+\begin{quote}
+There are two existing strategies for applying pre-trained language representations to downstream tasks: feature-based and fine-tuning. The feature-based approach [...] uses the pre-trained representations as additional features. The fine-tuning approach [...] introduces minimal task-specific parameters, and is trained on the downstream task by simply fine-tuning all pre-trained parameters. The two approaches share the same objective function during pre-training, where they use unidirectional language models to learn general language representations (Devlin et al. 2018, 1).
+\end{quote}
+
+BERT kann also \textit{feature-based} verwendet werden, indem es als embeddings benutzt wird, oder eben auf den konkreten Task lediglich fine-tuned werden.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Evaluationsmetrik}
@@ -82,8 +192,8 @@ accuracy = \frac{1}{N} \sum\limits_{i=1}^{N} \mathbbm{1}(\hat{y}_{i} = y_{i})
 \label{indikator}
 \mathbbm{1}(\hat{y}_{i} = y_{i}) \coloneqq 
 \begin{cases}
-      1, & \text{if}\ \hat{y}_{i} = y_{i} \\
-      0, & \text{otherwise}
+   1, & \text{if}\ \hat{y}_{i} = y_{i} \\
+   0, & \text{otherwise}
 \end{cases}
 \end{equation}
 
@@ -91,11 +201,11 @@ Hier entspricht $N$ der Größe des Testsets in Instanzen, $\hat{y}_{i}$ der Vor
 
 
 \begin{equation}
-    \label{eq:eqn1}
-        \begin{aligned}
-            0.5 &= \frac{1}{4} (\mathbbm{1}(0 = 0) + \mathbbm{1}(0 = 0) + \mathbbm{1}(0 = 1) + \mathbbm{1}(0 = 1))                \\
-                       &=\frac{1}{4} (1 + 1 + 0 + 0)                
-        \end{aligned}
+  \label{eq:eqn1}
+    \begin{aligned}
+      0.5 &= \frac{1}{4} (\mathbbm{1}(0 = 0) + \mathbbm{1}(0 = 0) + \mathbbm{1}(0 = 1) + \mathbbm{1}(0 = 1))        \\
+            &=\frac{1}{4} (1 + 1 + 0 + 0)        
+    \end{aligned}
 \end{equation}
 
 
@@ -118,30 +228,31 @@ Die Datengrundlage der durchgeführten Experimente waren insgesamt vier verschie
 \begin{itemize}
 \item[a)] \textbf{Dramen}, deren Erstdruck zwischen 1650 und 1815 erschienen ist. Die Texte stammen von TextGrid\footnote{\url{https://textgridrep.org}}. Labels, die jedem Fragment ihr entsprechendes Genre zuordnen, das heißt Komödie, Tragödie oder Schauspiel, wurden aus den TEI Headern extrahiert.
 \item[b)] \textbf{Romane}, die zwischen 1788 und 1984 veröffentlicht wurden, und von Schlör et al. (2019) annotiert wurden. Jedes Fragment entspricht einer Textart, also narrativ, argumentativ oder deskriptiv.
-\item[c)] Artikel von \textbf{Wikipedia}\footnote{\url{https://github.com/papajan3000/german_text_classification_nlp/blob/master/dl_dataset/wikicorpus_v2.csv}}, die im Rahmen eines Seminars des Masterstudiengangs Digital Humanities im Wintersemester 2018/2019 gesammelt wurden, entsprechen den Kategorien Gemälde, Oper oder Literatur.
-\item[d)] Zeitgenössische \textbf{Zeitungsartikel}\footnote{\url{https://ofai.github.io/million-post-corpus}}, die aus einem Korpus der österreichischen Tageszeitung Der Standard, erstellt von Schabus et al. (2017), stammen. Sparten sind hier Kultur, Panorama und Wissenschaft.
+\item[c)] Artikel von \textbf{Wikipedia}\footnote{\url{https://github.com/papajan3000/german_text_classification_nlp/blob/master/dl_dataset/wikicorpus_v2.csv}}, die im Rahmen eines Seminars des Masterstudiengangs Digital Humanities der Universität Würzburg im Wintersemester 2018/2019 gesammelt wurden, sind aus den Kategorien Gemälde, Oper und Literatur.
+\item[d)] Zeitgenössische \textbf{Zeitungsartikel}\footnote{\url{https://ofai.github.io/million-post-corpus}} aus den Jahren 2014 bis 2016, die aus einem Korpus der österreichischen Tageszeitung Der Standard, erstellt von Schabus et al. (2017), stammen. Sparten sind hier Kultur, Panorama und Wissenschaft.
 \end{itemize}
 
-Korpora a) und b) sind in erster Linie für die Digital Humanities interessant, enthalten teilweise ältere Sprache, sind syntaktisch und semantisch eher komplex konstruiert, wohingegen c) und d) moderner, sachlicher, wenn nicht sogar einfacher Sprache entspricht. a), c) und d) wurden auf die Größe des kleinsten Korpus, b), \textit{downgesampled}, um einen vergleichbaren Ausgangspunkt zu gewährleisten. Wenn ein Korpus mehr Datenpunkte hat als das andere, sind die entsprechenden Modelle nicht vergleichbar, da das größere Korpus schon aufgrund der größeren Datengrundlage im Vorteil ist\footnote{Vergleichbar unter Laborbedingungen sind die Korpora trotzdem nicht, da beispielsweise die Komplexität der Sprache nicht berücksichtigt wird.}. Jedes Korpus wurde im Verhältnis 80:10:10 in Training-, Validation- und Testset aufgeteilt\footnote{Mit \textit{random seed} $23$.}. Nähere Details sind Tabelle \ref{korpusstats} zu entnehmen.
+Korpus a) und b) sind in erster Linie für die Digital Humanities interessant, syntaktisch und semantisch eher komplex konstruiert, und reichen bis ins 17. Jahrhundert zurück, wohingegen c) und d) moderner, sachlicher, wenn nicht sogar einfacher formuliert sind. a), c) und d) wurden auf die Größe des kleinsten Korpus, b), \textit{downgesampled}, um einen vergleichbaren Ausgangspunkt zu gewährleisten. Wenn ein Korpus umfangreicher als das andere ist, ist ein Vergleich der trainierten Modelle weniger aussagekräftig, da das größere Korpus schon aufgrund der Datengrundlage im Vorteil ist\footnote{Vergleichbar unter Laborbedingungen sind die Korpora trotzdem nicht, da beispielsweise die Komplexität der Sprache nicht berücksichtigt wird.}. Jedes Korpus wurde im Verhältnis 80:10:10 in Training-, Validation- und Testset aufgeteilt\footnote{Mit \textit{random seed} $23$.}. Nähere Details sind Tabelle \ref{korpusstats} zu entnehmen.
 
 \begin{table}
 \centering
 \begin{tabular}{lllll}
 \toprule
- &    Dramen &   Romane &  Wikipedia & Zeitung \\
+ &  Dramen &  Romane & Wikipedia & Zeitung \\
 \midrule
-Fragmente       &     781 &     781 &        781 &      781 \\
-Tokens     &   84711 &   69864 &      91422 &    93263 \\
-Types      &   19867 &    8724 &      25972 &    26857 \\
-Minimum    &      20 &      19 &         35 &       50 \\
-Maximum    &     144 &     290 &        150 &      204 \\
-Durchschnitt &  108 &   89 &     117 &   119 \\
-Standardabweichung &    16 &   38 &      20 &    44 \\
-Klassenverteilung &  304:296:181 &                                  304:296:181 &  304:296:181 &  304:296:181 \\
+Fragmente    &   781 &   781 &    781 &   781 \\
+Tokens   &  84711 &  69864 &   91422 &  93263 \\
+Types   &  19867 &  8724 &   25972 &  26857 \\
+Minimum  &   20 &   19 &     35 &    50 \\
+Maximum  &   144 &   290 &    150 &   204 \\
+Durchschnitt & 108 &  89 &   117 &  119 \\
+Standardabweichung &  16 &  38 &   20 &  44 \\
+Klassenverteilung (absolut) & 304:296:181 &                 304:296:181 & 304:296:181 & 304:296:181 \\
+Klassenverteilung (relativ) & 0.39:0.37:0.23&                 0.39:0.37:0.23& 0.39:0.37:0.23& 0.39:0.37:0.23 \\
 \bottomrule
 \end{tabular}
 \caption{%
-Verwendete Korpora. Dramen, Wikipedia und Zeitung wurden auf die Größe des Roman Korpus downgesampled, um einen vergleichbaren Ausgangspunkt annähernd zu gewährleisten. 
+Verwendete Korpora. Dramen, Wikipedia und Zeitung wurden auf die Größe des Roman Korpus \textit{downgesampled}, um einen vergleichbaren Ausgangspunkt annähernd zu gewährleisten. Wenn nicht anders angegeben, beziehen sich die Zahlen auf Tokens.
 }
 \label{korpusstats}
 \end{table}
@@ -149,34 +260,30 @@ Verwendete Korpora. Dramen, Wikipedia und Zeitung wurden auf die Größe des Rom
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Versuchsaufbau}
+\section{Versuchsaufbau} 
 \label{versuchsaufbau}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Zum Vergleich stehen zwei Algorithmen aus dem klassischen Machine Learning, logistische Regression und Support Vector Machine, sowie zwei Ansätze aus dem Bereich des Deep Learning, ein GRU mit BERT\footnote{Hier kam nicht das klassische, multi-linguale BERT zum Einsatz, sondern von Grund auf neu ausschließlich mit deutschen Texten trainiertes Modell. Das von Deepset zur Verfügung gestellte Modell wurde für etwa neun Tage auf 6 GB Wikipedia, 2.4 GB Gerichtsprotokollen und 3.6 GB Zeitungsartikeln trainiert (https://deepset.ai/german-bert). Hier schneidet die deutsche Variante beispielsweise bei einer multiclass sentiment classification um 2.7\% besser ab als die multi-linguale Version. "Although the multilingual models released by Google have increased vocab sizes (> 100k tokens) and cover quite a lot of German text, we realized its limitations. Especially when words are chunked into small parts, we believe the model will have a difficult time making sense of the individual chunks."} als embedding layer (feature-based), sowie BERT selbst, das mit den jeweiligen Trainingsdaten fine-tuned wurde.\\
+Für jedes Korpus wurden insgesamt vier Modelle trainiert, und mit dem entsprechenden Testset evaluiert. Als Tokenizer kam ein für das Deutsche regelbasiert implementierte Tokenizer\footnote{\url{https://spacy.io/usage/spacy-101}} zum Einsatz. Für das klassische maschinelle Lernen, logistische Regression und SVM, wurde kein aufwendiges \textit{feature engineering} betrieben, sondern $tfidf$ gewichtete Worthäufigkeiten verwendet, da diese Ansätze lediglich als Baseline dienen sollten. Das Sprachmodell BERT (Devlin et al., 2018) wurde sowohl \textit{feature-based} in Kombination mit Dokument \textit{embeddings} und einem GRU Netzwerk von Grund auf trainiert, als auch auf die jeweiligen Korpora \textit{fine-tuned}, was nach Devlin et al. (2018) generell zu besseren Ergebnissen führen soll. Es wurde ein ausschließlich auf deutschen Textdaten trainiertes BERT\footnote{Das klassische, multi-linguale BERT wurde auf einer Vielzahl verschiedener Sprachen trainiert (Devlin et al. 2018). Das von Deepset (\url{https://deepset.ai}) zur Verfügung gestellte deutsche BERT wurde für etwa neun Tage auf 6 GB Wikipedia, 2.4 GB Gerichtsprotokollen und 3.6 GB Zeitungsartikeln trainiert (\url{https://deepset.ai/german-bert}). Bei deren Experimente schneidet die deutsche Variante beispielsweise bei einer \textit{multiclass sentiment classification} um 2.7\% besser ab als die multi-linguale Version, was foldendermaßen begründet wird: ,,Although the multilingual models released by Google have increased vocab sizes (> 100k tokens) and cover quite a lot of German text, we realized its limitations. Especially when words are chunked into small parts, we believe the model will have a difficult time making sense of the individual chunks.''} verwendet. Die Hyperparameter aller Modelle wurden soweit möglich wie in Kapitel \ref{grundlagen} beschrieben optimiert.
+Verwendete Python Bibliotheken waren scikit-learn (QUELLE) für das klassische maschinelle Lernen, sowie flair (QUELLE) für \textit{feature-based}, und spacy-pytorch-transformers (QUELLE) für \textit{fine-tuned} BERT.
 
-Als Tokenizer wurde für alle vier Modelle der von spaCy verwendet (This is done by applying rules specific to each language. For example, punctuation at the end of a sentence should be split off – whereas “U.K.” should remain one token. First, the raw text is split on whitespace characters, similar to text.split(' '). Then, the tokenizer processes the text from left to right. On each substring, it performs two checks: Does the substring match a tokenizer exception rule? For example, “don’t” does not contain whitespace, but should be split into two tokens, “do” and “n’t”, while “U.K.” should always remain one token. Can a prefix, suffix or infix be split off? For example punctuation like commas, periods, hyphens or quotes. Beispiel: "Wie geht's in N.Y.?" -> " Wie geht 's in N.Y. ? ").\\
 
-Als Features für die logistische Regression und SVM dienten Termhäufigkeiten mit einer TF-IDF Gewichtung\footnote{Hier wurde kein Feature Engineering betrieben, da dieser Ansatz lediglich als Baseline dienen soll. Daniel et al. kommen mit aufwendigem Engineering mit einer SVM auf 88\% (???) Genauigkeit.}; Hyperparameter beider Algorithmen wurden im Rahmen einer Rastersuche optimiert. Umgesetzt wurde alles mit scikit-learn.\\
-Bei dem feature-basierten Ansatz mit den deutschen BERT embeddings 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Auswertung}
 \label{auswertung}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Verglichen werden hier die besten klassischen mit den besten neuronalen Ansätzen. Die Ergebnisse der Experimente sind Tabelle \ref{scoretable} zu entnehmen. Neben den vier vorgestellten Ansätzen wurde ein Klassifikator mit dem Accuracy Score entsprechend Gleichung \ref{accuracy} evaluiert, der für jede Testinstanz zufällig ein Label wählt. Der beste Ansatz für das Dramen Korpus ist die SVM, die feature-based BERT um 1.63\% accuracy outperformed. Ebenfalls am besten hat die SVM für die Romane (vgl. Schlör et al.) abgeschnitten, mit 7.59\% höherem accuracy score. Der feature-based BERT Ansatz hat für Wikipedia Artikel eine Verbesserung um 1.26\% gegenüber der logistischen Regression eingebracht. Die mit Abstand deutlichste Verbesserung hat fine-tuned BERT mit 15.19\% gegenüber der logistischen Regression gezeigt.
-
+Im Vergleich stehen nun zwei klassische gegen zwei neuronale Ansätze. Alle Ergebnisse sind Tabelle \ref{scoretable} zu entnehmen, die auch die Genauigkeit einer zufälligen Klassifikation (für jede Instanz wird eines der drei möglichen Labels zufällig gezogen) enthält. Der beste Ansatz für das Dramen Korpus ist eine SVM, die \textit{feature-based} BERT um 1.63\% übertrifft. Ebenfalls am besten hat eine SVM für die Romane mit einem um 7.59\% höheren Genauigkeitswert abgeschnitten. \textit{Feature-based} BERT erzielt für Wikipedia Artikel eine Verbesserung um 1.26\% gegenüber der logistischen Regression. Die mit Abstand deutlichste Verbesserung zeigt sich bei \textit{fine-tuned} BERT mit 15.19\% gegenüber der logistischen Regression.
 
 \begin{table}
-\label{scoretable}
 \centering
 \begin{tabular}{lrrrr}
 \toprule
-{} & Dramen  &    Romane &  Wikipedia &  Zeitung\\
+{} & Dramen &  Romane & Wikipedia & Zeitung\\
 \midrule
 
-Random&  .3544&.3544&.3544&.3544 \\
+Random& .3544&.3544&.3544&.3544 \\
 Logistic Regression&.6709&.6203&.9241&.7975 \\
 Support Vector Machine&\textbf{.7215}&\textbf{.7089}&.9114&.7848 \\
 BERT (feature-based)&.6962&.6329&\textbf{.9367}&.8101 \\
@@ -184,10 +291,9 @@ BERT (fine-tuned)&.6709&.6203&.9241&\textbf{.9494} \\
 
 \bottomrule
 \end{tabular}
-\caption{TODO!}
+\caption{Genauigkeit der insgesamt 16 verschiedenen Modellen. Die Werte der ersten Zeile entspricht einer zufälligen Klassifikation.}
+\label{scoretable}
 \end{table}
-
-
 
 
 
@@ -196,21 +302,29 @@ BERT (fine-tuned)&.6709&.6203&.9241&\textbf{.9494} \\
 \chapter{Diskussion}
 \label{diskussion}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Was ist in dem Kapitel?
+In diesem Kapitel werden die zuvor vorgestellten Ergebnisse näher beleuchtet und diskutiert. Neben allgemeinen Beobachtungen (\ref{beobachtungen}), wurde eine Konfusionsmatrix für jedes Korpus und jedes Modell erstellt (\ref{dramen_diskussion}, \ref{romane_diskussion}, \ref{wikipedia_diskussion}, \ref{zeitung_diskussion}), um die Stärken und Schwächen jedes Ansatzes für jedes Korpus zu veranschaulichen.
 
 
 \section{Beobachtungen}
 \label{beobachtungen}
-- problematisch bei BERT weil nur 512 tokens??
-- Deep Learning und transfer learning mag ja noch so gut sein, bringt für DH aber nix, weil die Sachen nicht transferierbar sind.
-- Proposal: bei lowe resource languages (ist ja "altes deutsch") ist man immer noch hinten dran
-- Deep Learning nur gut wenn man krass viele Daten hat (Wikipedia: easy), gibt aber nur endlich viele Romane, geschweige denn digitalisiert
-- Classic ist viel schneller
+Auffällig ist, dass die generischen Korpora, Wikipedia und Zeitung, mit BERT am besten abschneiden, wohingegen die Dramen und Romane mit den 
+klassischen Ansätzen deutlich besser abschneiden. Das \textit{transfer learning} mit Sprachmodellen wie BERT 
+mag noch so gut funktionieren, ohne eine selbst ungelabelte massive Menge von domänenspezifischen Daten lassen sich allem Anschein nach keine 
+besseren Ergebnisse erzielen. Schlör et al. (2017) haben ähnliche Erfahrungen gemacht.
+
+Für die klassischen Algorithmen spricht der Rechenaufwand, so kann ein Modell inklusive Hyperparameteroptimierung in nur wenigen Sekunden 
+trainiert werden, wohingegen das Training für ein einziges BERT-basiertes Modell ohne Optimierung auf einer GPU nahezu eine Stunde gedauert hat. 
+Die Länge der Eingabevektoren ist bei der logistischen Regression und SVM unbegrenzt, wohingegen BERT maximal 512 Tokens auf einmal nimmt; das 
+macht es zunächst\footnote{Dies kann umgangen werden, indem man beispielsweise das Dokument in angemessen lange Sequenzen segmentiert, 
+jedes Segment klassifizieren lässt, und einen einfachen Mehrheitsentscheid über alle Segmente für die klassifizierte Klasse macht.} unmöglich 
+ganze Dokumente zu prozessieren.
 
 
 
 \subsection{Dramen}
 \label{dramen_diskussion}
+In Abbildung \ref{fig:drama} sind die Konfusionsmatrizen der vier Ansätze für alle vier Korpora zu sehen. Die durchschnittlich beste Klassifizierung macht hier die SVM. Bei allen vier Ansätzen wird deutlich, dass Komödie und Tragödie nicht leicht zu unterscheiden sind; obwohl die Schauspiel-Klasse am wenigsten Trainingsbeispiele hat, ist diese doch relativ sicher zu klassifizieren, vor allem das feature-based BERT Modell scheint die Schauspiel Klasse am besten von allen erkennen zu können.
+
 \begin{figure}
 \centering
 \begin{subfigure}[b]{.45\linewidth}
@@ -240,6 +354,11 @@ Was ist in dem Kapitel?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Romane}
+\label{romane_diskussion}
+In Abbildung \ref{fig:roman} wird die Klassifizerung der Romanfragemente dargestellt. Hier ist auffällig, dass die logistische Regression die deskriptiven Fragmente überhaupt nicht erkennt, und der narrativen, teilweise der argumentativen Klasse zuordnet. Auch hier schneidet durchschnittlich die SVM am besten ab. Die argumentativen Fragmente werden hier am häufigsten korrekt zugeordnet. Ähnliches zeigt sich bei feature-based BERT, bei dem die argumentativen Texte relativ sicher klassifiziert werden. Fine-tuned schieint überall etwa gleich viele Fehler zu machen.
+
+
+
 \begin{figure}
 \centering
 \begin{subfigure}[b]{.45\linewidth}
@@ -268,6 +387,10 @@ Was ist in dem Kapitel?
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Wikipedia}
+\label{wikipedia_diskussion}
+
+Wie in Abbildung \ref{fig:wikipedia} zu sehen ist, ist die Erfolgsquote hier deutlich höher; alle Ansätze funktionieren ähnlich gut. Sowohl logistische Regression, SVM, als auch fine-tuned BERT scheinen die Literatur Artikel nicht immer als solche zu erkennen. Das feature-based BERT hingegen ist hier weniger verwirrt.
+
 \begin{figure}
 \centering
 \begin{subfigure}[b]{.45\linewidth}
@@ -288,7 +411,7 @@ Was ist in dem Kapitel?
 \caption{BERT (fine-tuned)}\label{fig:wikipedia-fine}
 \end{subfigure}
 \caption{Normalisierte Konfusionsmatrizen der verschiedenen Ansätze für das Wikipedia Korpus; je dunkler ein Feld, desto mehr Fragmente wurden der Klasse in der Spalte bzw. Reihe zugeordnet. Feature-based BERT (c) schneidet hier durchschnittlich am besten ab.}
-\label{fig:roman}
+\label{fig:wikipedia}
 \end{figure}
 
 
@@ -296,7 +419,10 @@ Was ist in dem Kapitel?
 
 
 \subsection{Zeitung}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{zeitung_diskussion}
+
+Beim Zeitungskorpus in Abbildung \ref{fig:zeitung} wird der Vorteil von fine-tuned BERT sehr deutlich; wo die klassischen Ansätze Probleme vor allem mit den Wissenschaft Artikeln haben, gibt es das bei fine-tuned nicht mehr. Sogar bei feature-based ist bereits eine deutliche Verbesserung zu erkennen.
+
 \begin{figure}
 \centering
 \begin{subfigure}[b]{.45\linewidth}
@@ -317,7 +443,7 @@ Was ist in dem Kapitel?
 \caption{BERT (fine-tuned)}\label{fig:zeitung-fine}
 \end{subfigure}
 \caption{Normalisierte Konfusionsmatrizen der verschiedenen Ansätze für das Zeitungs Korpus; je dunkler ein Feld, desto mehr Fragmente wurden der Klasse in der Spalte bzw. Reihe zugeordnet. Fine-tuned BERT (d) schneidet hier durchschnittlich am besten ab.}
-\label{fig:roman}
+\label{fig:zeitung}
 \end{figure}
 
 
@@ -328,9 +454,10 @@ Was ist in dem Kapitel?
 \chapter{Ausblick und Fazit}
 \label{fazit}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-- k-fold?
-- language modell auf relativ großem korpus weitertrainieren und dann erst fine-tunen
-- testen auf den abgeschnittenen Daten, zumindest für alle außer Romane
+Thema der vorliegenden Abreit ist das Problem begrenzter Daten, und ob neuronalen Ansätze aus dem Bereich des maschinellen Lernens bei Probleme, für die nur ein begrenzter Umfang an Daten verfügbar ist, zu besseren Ergebnissen führen, als dies mit klassischen Algorithmen möglich ist. Die Untersuchungen haben gezeigt, dass für bestimmte Korpora tatsächlich.
+
+
+Die Arbeit ist nicht abgeschlossen; zunächst können die Ergebnisse mit einer Kreuzvalidierung geprüft werden, für den Fall, dass das Testset unglücklich gewählt, und nicht repräsentativ ist. Da drei der vier Korpora downgesampled wurden, könnten außerdem die außenvor gelassenen Daten als Testset dienen---je größer das Testset, desto repräsentativer sind die Zahlen. Da sich Ergebnisse, vor allem für das Zeitungskorpus, mit fine-tuned BERT deutlich hervorheben, könnte ein möglichst großes domänenspezifisches Korpus angelegt werden, auf dem das Training des Sprachmodells fortgeführt, und anschließend, wie geschehen, auf den downstream task angepasst werden. Wie die Diskussion (\ref{diskussion}) gezeigt hat, funktionieren bestimmte Ansätze nur für bestimmte Klassen besonders gut. Die Idee des sogenannten ensemble learning ist es, mehrere Modelle miteinander zu kombinieren, das heißt einen Datenpunkt von beispielsweise drei Modellen zu klassifizieren, und die finale Klasse abhängig von einem Mehrheitsentscheid zu machen.
 
 
 \nocite{*}
