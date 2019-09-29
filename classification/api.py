@@ -78,16 +78,8 @@ def classic_pipeline(corpus: str, downsample: bool = True, random_state: int = 2
 
     algorithms = classic_optimization(dataset, random_state)
     for name, classifier, hyperparameters in algorithms:
+        print(name, hyperparameters)
         c = classifier(**hyperparameters)
         c.fit(X["train"], y["train"])
         prediction = c.predict(X["test"])
-        yield name, metrics.confusion_matrix(y_true=y["test"], y_pred=prediction)
-        #yield (name, metrics.accuracy_score(y["test"], prediction))
-
-
-def neural_pipeline(corpus: str, random_state: int = 23, epochs: int = 10):
-    raise NotImplementedError
-
-
-def evaluate():
-    raise NotImplementedError
+        yield (name, metrics.accuracy_score(y["test"], prediction))
